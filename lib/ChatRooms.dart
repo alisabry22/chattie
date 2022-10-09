@@ -5,6 +5,9 @@ import 'package:chat_app/Services/ChatServices/chatServices.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:socket_io_client/socket_io_client.dart';
+
+import 'main.dart';
 
 class ChatRooms extends StatefulWidget {
   const ChatRooms({Key? key}) : super(key: key);
@@ -19,6 +22,14 @@ class _MyWidgetState extends State<ChatRooms> {
   @override
   void initState() {
     super.initState();
+    socket.connect();
+   socket.onConnect((data){
+  socket.on("latestmessage",(element){
+
+    print(element);
+  });
+   });
+
     getAllChats();
     getCurrentUser();
   }

@@ -10,7 +10,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});
@@ -90,12 +89,9 @@ setState(() {
    
   SharedPreferences sharedPrefs=await SharedPreferences.getInstance();
     currentUserId=sharedPrefs.getString("ID");
-    socket.connect();
+   
 
-    socket.onConnect((connect) {
-      
-       
-    });
+
   socket.emit("JoinChat",data[1]);
    socket.on("JoinChat",(returneddata){
     
