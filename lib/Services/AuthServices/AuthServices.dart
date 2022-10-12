@@ -41,7 +41,8 @@ class AuthServices extends GetxController {
   RxBool loggedin = false.obs;
 
   Future signUpFunction(String username, String password, String email,String phone, String countrycode) async {
-    String signupurl = "${Constants().url}/user/adduser";
+    String signupurl = "${await Constants().detectDevice()}/user/adduser";
+    print(signupurl);
     final usermodel = User(
         username: username,
         email: email,
@@ -60,14 +61,14 @@ class AuthServices extends GetxController {
       saveTokenLocally(data.token);
       saveIDLoggedInUser(data.user.id);
       loggedin.value = true;
-      return true;
+      return [true,data];
     } else {
       loggedin.value = false;
-      return jsonDecode(response.body)["msg"];
+      return [false,jsonDecode(response.body)["msg"]];
     }
   }
   Future RenewToken()async{
-String renewurl="${Constants().url}/user/renewtoken";
+String renewurl="${await Constants().detectDevice()}/user/renewtoken";
 SharedPreferences sharedprefs=await SharedPreferences.getInstance();
 String? token=sharedprefs.getString("token");
 
@@ -103,8 +104,8 @@ else
  
 
   Future loginFunction(String email, String password) async {
-    String loginUrl = "${Constants().url}/user/login";
-  
+    String loginUrl =await Constants().detectDevice();
+    loginUrl="$loginUrl/user/login";
     
     final request = {"email": email, "password": password};
 
@@ -120,17 +121,17 @@ else
       
     saveTokenLocally(data.token);
     saveIDLoggedInUser(data.user.id);
-    return true;
+    return [true,data];
   } else {
     loggedin.value = false;
-    return jsonDecode(response.body)["msg"];
+    return [false,jsonDecode(response.body)["msg"]];
   }
 } 
   
 
 
   Future getUserInfo(String phone) async {
-     String loginUrl = "${Constants().url}/user/getuser";
+     String loginUrl = "${await Constants().detectDevice()}/user/getuser";
     SharedPreferences sharedprefs=await SharedPreferences.getInstance();
     String? token=sharedprefs.getString("token");
     final request={"phone":phone};

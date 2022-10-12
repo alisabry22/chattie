@@ -5,11 +5,14 @@ import 'package:chat_app/Services/storyresponse/storyResponse.dart';
 import 'package:chat_app/Services/storyresponse/user_story_model.dart';
 import 'package:chat_app/StoriesView.dart';
 import 'package:chat_app/main.dart';
+import 'package:chat_app/objectbox.g.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:status_view/status_view.dart';
+
+import 'Models/ObjectBox/UserBox.dart';
 
 class StatusPage extends StatefulWidget {
   const StatusPage({Key? key}) : super(key: key);
@@ -45,9 +48,12 @@ class _StatusPageState extends State<StatusPage> {
 
 Future getOthersStory()async{
    SharedPreferences sharedprefs = await SharedPreferences.getInstance();
- int? id = sharedprefs.getInt("localId");
+ String? id = sharedprefs.getString("ID");
+
+Query<UserBox> query=objectBox.userBox.query(UserBox_.userID.equals(currentuser!)).build();
+UserBox? userBox=query.findFirst();
      var data = await StoryServices()
-        .getOthersStory(objectBox.userBox.get(id!)!.phones);
+        .getOthersStory(objectBox.userBox.get(userBox!.id)!.phones);
 
         
     if (data is StoryResponse && data.users != null) {

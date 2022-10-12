@@ -1,5 +1,6 @@
 import 'package:chat_app/HomeScreen.dart';
 import 'package:chat_app/Models/User.dart';
+import 'package:chat_app/Services/AuthServices/LoginRespone.dart';
 import 'package:chat_app/main.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -150,19 +151,21 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                       countryCode,
                                     );
 
-                                    if (respond == true) {
+                                    if (respond[0] == true && respond[1] is LoginResponse) {
+                                      
+                                      LoginResponse userresponse=respond[1];
                                       //store user data Locally
                                       UserBox userBox =  UserBox(
+                                        userID: userresponse.user.id,
                                           username: usernameController.text,
                                           email: emailController.text,
                                           phone: phoneController.text.trim(),
                                           countrycode: countryCode,
-                                          phones: []
-                                          );
+                                          phones: [],   );
                                         SharedPreferences sharedprefs=await SharedPreferences.getInstance();
                                         
-                                        int id=  objectBox.userBox.put(userBox);
-                                        sharedprefs.setInt("localId", id);
+                                        objectBox.userBox.put(userBox);
+                                        
 
                                       Get.offAll(() =>const HomeScreen());
                                     } else {

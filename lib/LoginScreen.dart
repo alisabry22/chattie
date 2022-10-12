@@ -1,4 +1,6 @@
     import 'package:chat_app/HomeScreen.dart';
+import 'package:chat_app/Services/AuthServices/LoginRespone.dart';
+import 'package:chat_app/main.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -99,12 +101,12 @@ class LoginScreen extends StatelessWidget {
                                       final response =await  AuthServices().loginFunction(
                                           emailController.text.trim(),
                                           passwordController.text.trim());
-                                      if (response==true) {
-                                       
+                                      if (response==true && response is LoginResponse) {
+                                        
                                         Get.offAll(() => const HomeScreen());
                                       } else {
                                         Get.snackbar(
-                                            "Error message", response.toString(),
+                                            "Error message", response[1].toString(),
                                             duration: const Duration(seconds: 3),
                                             snackPosition: SnackPosition.BOTTOM);
                                       }

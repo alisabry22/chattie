@@ -15,8 +15,10 @@ class _StoriesViewState extends State<StoriesView> {
   final storyController = StoryController();
   List<StoryModel> stories = Get.arguments;
   List<StoryItem> storyItems = [];
+
   @override
   void initState() {
+    print(stories);
     super.initState();
     stories.forEach((element) {
       storyItems.add(
