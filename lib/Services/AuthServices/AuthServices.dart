@@ -118,7 +118,6 @@ else
     loggedin.value = true;
 
     final data = loginResponseFromJson(response.body);
-      
     saveTokenLocally(data.token);
     saveIDLoggedInUser(data.user.id);
     return [true,data];

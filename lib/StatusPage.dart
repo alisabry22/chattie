@@ -114,18 +114,15 @@ UserBox? userBox=query.findFirst();
                       )
                     : InkWell(
                         onTap: () async {
-                          XFile? image;
-                          image = await pickImage();
-                          if (image != null) {
-                            final userstory = await StoryServices()
-                                .uploadPhotoToServer(image, currentuser!);
+                           final userstory = await StoryServices()
+                                .uploadPhotoToServer( currentuser!);
 
                             if (userstory is UserStoryModel) {
                               setState(() {
                                 myStoryLinks = userstory.stories;
                               });
                             }
-                          }
+                          
                         },
                         child: CircleAvatar(
                           radius: 25,

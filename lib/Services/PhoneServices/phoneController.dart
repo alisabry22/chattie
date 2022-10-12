@@ -9,10 +9,10 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class phoneController extends GetxController{
-  String phoneHtppUrl=Constants().url+"/phone/searchphone";
+
    List<String> phones=[];
   Future getPhonesList(List<Contact>contacts)async{
-
+  String phoneHtppUrl="${await Constants().detectDevice()}/phone/searchphone";
     contacts.forEach((element) {
            if(element.phones.isNotEmpty)
       {

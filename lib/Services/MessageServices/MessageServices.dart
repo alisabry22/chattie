@@ -13,7 +13,7 @@ class MessageServices extends GetxController{
     SharedPreferences sharedPreferences=await SharedPreferences.getInstance();
     String? token=sharedPreferences.getString("token");
 
-    String messageUrl="${Constants().url}/message/$chatId";
+    String messageUrl="${await Constants().detectDevice()}/message/$chatId";
    
   try {
   final response=await http.get(Uri.parse(messageUrl),headers: {

@@ -1,5 +1,6 @@
 import 'package:chat_app/Bindings/Binding.dart';
 import 'package:chat_app/BoxDatabase/ObjectBox.dart';
+import 'package:chat_app/Constants/Constants.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_navigation/get_navigation.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
@@ -16,7 +17,9 @@ connecttoSocket();
 }
 
 connecttoSocket()async{
- socket=IO.io("http://10.0.2.2:3000",<String, dynamic>{
+  String url=await Constants().detectDevice();
+  
+ socket=IO.io(url.substring(0,url.length-4),<String, dynamic>{
       "transports": ["websocket"],
       "autoConnect": false,
       "forceNew": true

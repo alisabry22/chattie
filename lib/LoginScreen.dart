@@ -101,7 +101,7 @@ class LoginScreen extends StatelessWidget {
                                       final response =await  AuthServices().loginFunction(
                                           emailController.text.trim(),
                                           passwordController.text.trim());
-                                      if (response==true && response is LoginResponse) {
+                                      if (response[0]==true && response[1] is LoginResponse) {
                                         
                                         Get.offAll(() => const HomeScreen());
                                       } else {

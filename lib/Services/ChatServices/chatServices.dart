@@ -13,7 +13,7 @@ class ChatServices extends GetxController{
 
 final request={"userId":recieverid};
 
-String createChatapi="${Constants().url}/chat/";
+String createChatapi="${await Constants().detectDevice()}/chat/";
 
 SharedPreferences sharedprefs=await SharedPreferences.getInstance();
 String? token=sharedprefs.getString("token");
@@ -39,7 +39,7 @@ String? token=sharedprefs.getString("token");
 
   Future getAllChats()async{
 
-    String createChatapi="${Constants().url}/chat/";
+    String createChatapi="${await Constants().detectDevice()}/chat/";
 SharedPreferences sharedprefs=await SharedPreferences.getInstance();
 String? token=sharedprefs.getString("token");
 
@@ -56,7 +56,7 @@ String? token=sharedprefs.getString("token");
   
    if(response.statusCode==200){
     final data=chatResponseFromJson(response.body);
-  
+
   return data.chats;
    
    }

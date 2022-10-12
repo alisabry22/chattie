@@ -24,20 +24,29 @@ class _MyWidgetState extends State<ChatRooms> {
   void initState() {
     super.initState();
     socket.connect();
-   socket.onConnect((data){
-  socket.on("latestmessage",(message){
-    print(message as Map<String,dynamic>);
-    MessageModel messageModel=MessageModel.fromJson(message as Map<String,dynamic>);
+     getAllChats();
+   
+
+   socketservice();
+
+  
+    getCurrentUser();
+  }
+
+  socketservice(){
+      socket.on("latestmessage",(message){
+
+      MessageModel messageModel=MessageModel.fromJson(message);
+   
+    
   int index=0;
-   index= chats.indexWhere((element) => element.id==messageModel.id);
+
+   index= chats.indexWhere((element) => element.id==messageModel.chatId);
+
    setState(() {
      chats[index].messageModel=messageModel;
    });
   });
-   });
-
-    getAllChats();
-    getCurrentUser();
   }
 
   Future getAllChats() async {
@@ -46,7 +55,7 @@ class _MyWidgetState extends State<ChatRooms> {
     if (retrieveChats.isNotEmpty) {
       setState(() {
         chats = retrieveChats;
-       
+
       });
     }
 

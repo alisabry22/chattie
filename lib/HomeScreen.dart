@@ -10,6 +10,7 @@ import 'package:objectbox/objectbox.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'Models/ObjectBox/UserBox.dart';
+import 'Services/StoryServices/StoryServices.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -20,7 +21,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateMixin {
   late TabController tabController;
-
+  String currentuser="";
   Store? store;
   bool isStoreInitialized = false;
   List<UserBox>? users;
@@ -36,8 +37,19 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
       tabindex=tabController.index;
     });
   });
+  getCurrentUser();
 
+  }
 
+  getCurrentUser()async{
+
+    SharedPreferences sharedprefs=await SharedPreferences.getInstance();
+    String? id=sharedprefs.getString("ID");
+    if(id!=null){
+      setState(() {
+        currentuser=id;
+      });
+    }
   }
 
   @override
@@ -132,7 +144,10 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                  const SizedBox(height: 5,),
                   FloatingActionButton(
                     heroTag: "camera",
-                    onPressed: () {},
+                    onPressed: ()async {
+                          final userstory = await StoryServices()
+                                .uploadPhotoToServer( currentuser);
+                    },
                     child:const Icon(Icons.camera_alt),
                   ),
               ],

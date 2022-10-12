@@ -5,6 +5,7 @@ import 'package:chat_app/Services/AuthServices/AuthServices.dart';
 import 'package:chat_app/Services/ChatServices/chatServices.dart';
 import 'package:chat_app/Services/PhoneServices/phoneController.dart';
 import 'package:chat_app/main.dart';
+import 'package:chat_app/objectbox.g.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
@@ -37,9 +38,9 @@ class _ContactsScreenState extends State<ContactsScreen> {
 
 
 
+
   requestContacts() async {
        SharedPreferences sharedprefs=await SharedPreferences.getInstance();
-    int? id=sharedprefs.getInt("localId");
     if (await FlutterContacts.requestPermission()) {
       List<Contact> democontact = await FlutterContacts.getContacts(withProperties: true);
 
@@ -50,8 +51,11 @@ element.phones.forEach((phone) {
 });
  });
  
+ String? id = sharedprefs.getString("ID");
 
-UserBox? userBox= objectBox.userBox.get(id!);
+Query<UserBox> query=objectBox.userBox.query(UserBox_.userID.equals(id!)).build();
+UserBox? userBox=query.findFirst();
+
   userBox!.phones=phones.toSet().toList();
   objectBox.userBox.put(userBox);
 setState(() {

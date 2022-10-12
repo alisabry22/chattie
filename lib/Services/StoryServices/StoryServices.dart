@@ -25,11 +25,16 @@ class StoryServices {
     }
   }
 
-  Future uploadPhotoToServer(XFile file, String userid) async {
-    String storyImageurl = await uploadStoryToCloud(file, userid);
+  Future uploadPhotoToServer( String userid) async {
+     ImagePicker imagePicker = ImagePicker();
+
+  final XFile? image = await imagePicker.pickImage(source: ImageSource.gallery);
+
+  if (image != null) {
+  String storyImageurl = await uploadStoryToCloud(image, userid);
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     String? token = sharedPreferences.getString("token");
-    String storyurl = "${Constants().url}/story/uploadstory";
+    String storyurl = "${await Constants().detectDevice()}/story/uploadstory";
     final request = {"storyurl": storyImageurl};
     final response = await http.post(Uri.parse(storyurl),
         body: jsonEncode(request),
@@ -46,10 +51,13 @@ class StoryServices {
     }
   }
 
+    
+  }
+
   Future getmyAllStories() async {
     SharedPreferences sharedPrefs = await SharedPreferences.getInstance();
     String? token = sharedPrefs.getString("token");
-    String getStories = "${Constants().url}/story/getcurrentstory";
+    String getStories = "${await Constants().detectDevice()}/story/getcurrentstory";
 
     try {
   final response = await http.get(Uri.parse(getStories),
@@ -72,7 +80,7 @@ class StoryServices {
   }
 
   Future getOthersStory(List<String> phones) async {
-    String storyurls = "${Constants().url}/story/getotherstory";
+    String storyurls = "${await Constants().detectDevice()}/story/getotherstory";
         SharedPreferences sharedPrefs = await SharedPreferences.getInstance();
     String? token = sharedPrefs.getString("token");
     try {
