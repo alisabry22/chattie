@@ -16,7 +16,7 @@ connecttoSocket();
 }
 
 connecttoSocket()async{
- socket=IO.io("http://192.168.1.3:3000",<String, dynamic>{
+ socket=IO.io("http://10.0.2.2:3000",<String, dynamic>{
       "transports": ["websocket"],
       "autoConnect": false,
       "forceNew": true

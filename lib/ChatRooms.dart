@@ -1,5 +1,6 @@
 import 'package:chat_app/ChatScreen.dart';
 import 'package:chat_app/Models/ChatModel.dart';
+import 'package:chat_app/Models/MessageModel.dart';
 import 'package:chat_app/Models/User.dart';
 import 'package:chat_app/Services/ChatServices/chatServices.dart';
 import 'package:flutter/material.dart';
@@ -24,9 +25,14 @@ class _MyWidgetState extends State<ChatRooms> {
     super.initState();
     socket.connect();
    socket.onConnect((data){
-  socket.on("latestmessage",(element){
-
-    print(element);
+  socket.on("latestmessage",(message){
+    print(message as Map<String,dynamic>);
+    MessageModel messageModel=MessageModel.fromJson(message as Map<String,dynamic>);
+  int index=0;
+   index= chats.indexWhere((element) => element.id==messageModel.id);
+   setState(() {
+     chats[index].messageModel=messageModel;
+   });
   });
    });
 

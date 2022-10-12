@@ -1,6 +1,4 @@
-import 'package:chat_app/Models/StoryModel.dart';
-import 'package:flutter_contacts/flutter_contacts.dart';
-import 'package:json_annotation/json_annotation.dart';
+
 
 class User {
    String id;
