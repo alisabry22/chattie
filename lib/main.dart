@@ -18,13 +18,14 @@ connecttoSocket();
 
 connecttoSocket()async{
   String url=await Constants().detectDevice();
-  
+
  socket=IO.io(url.substring(0,url.length-4),<String, dynamic>{
       "transports": ["websocket"],
       "autoConnect": false,
       "forceNew": true
     });
     socket.connect();
+    print(socket.connected);
 }
 
 class MyApp extends StatelessWidget {

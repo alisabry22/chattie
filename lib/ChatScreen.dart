@@ -32,7 +32,7 @@ class _ChatScreenState extends State<ChatScreen> {
     super.initState();
   receiverData=data[0] as User;
     getuser();
-    
+    socket.connect();
     fetchAllMessages();
     connectToSocket();
   }
@@ -46,11 +46,12 @@ class _ChatScreenState extends State<ChatScreen> {
     if(mounted){
 setState(() {
         messages.add(messageModel);
-      });
-          scrollController.animateTo(
+           scrollController.animateTo(
                             scrollController.position.maxScrollExtent,
                             duration:const Duration(milliseconds: 1),
                             curve: Curves.easeOut);
+      });
+       
     }
           
 

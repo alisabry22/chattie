@@ -49,6 +49,7 @@ String? token=sharedprefs.getString("token");
   
   
 
+  try {
   final response=await http.get(Uri.parse(createChatapi),headers: {
    "Content-Type": "application/json",
    "Authorization":"Bearer $token"
@@ -56,13 +57,16 @@ String? token=sharedprefs.getString("token");
   
    if(response.statusCode==200){
     final data=chatResponseFromJson(response.body);
-
+  
   return data.chats;
    
    }
    else{
     return jsonDecode(response.body)["msg"];
    }
+} catch (e) {
+ print(e.toString());
+}
 
 
 
