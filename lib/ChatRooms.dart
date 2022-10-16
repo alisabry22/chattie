@@ -1,6 +1,7 @@
 import 'package:chat_app/ChatScreen.dart';
 import 'package:chat_app/Models/User.dart';
 import 'package:chat_app/Services/ChatServices/chatServices.dart';
+import 'package:chat_app/Services/MessageServices/MessageServices.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -43,7 +44,12 @@ class ChatRooms extends GetView<ChatServices> {
                         .firstWhere((element) => element.id != controller.currentUserID.value);
                     return InkWell(
                       onTap: (){
+                        Get.find<MessageServices>().chatId.value=controller.chats[index].id;
+                        Get.find<MessageServices>().user.value=recieverData;
                         Get.to(()=>ChatScreen(),arguments: [recieverData,controller.chats[index].id]);
+                        var chatID;
+                        chatID= Get.find<MessageServices>().chatId.value;
+                        print("chat id to be sent $chatID");
                       },
                       child:controller.chats[index].messageModel!=null? ListTile(
                         leading:const CircleAvatar(
