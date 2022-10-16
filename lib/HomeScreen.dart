@@ -114,7 +114,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
       ),
       body: TabBarView(
           controller: tabController,
-        children: const[
+        children: [
           ChatRooms(),
           StatusPage(),
           CallsPage(),
@@ -128,7 +128,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
     return tabindex == 0
         ? FloatingActionButton(
             onPressed: () {
-              Get.to(()=>const ContactsScreen());
+              Get.to(()=> ContactsScreen());
             },
             child:const Icon(Icons.chat),
           )

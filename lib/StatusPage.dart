@@ -93,138 +93,134 @@ UserBox? userBox=query.findFirst();
       ),
       child: Padding(
         padding: const EdgeInsets.only(left: 10),
-        child: SingleChildScrollView(
-          child: Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.1,
-                  child: Row(children: [
-                    myStoryLinks.isNotEmpty
-                        ? InkWell(
-                            onTap: () {
-                              Get.to(() => const StoriesView(),
-                                  arguments: myStoryLinks);
-                            },
-                            child: StatusView(
-                              radius: 25,
-                              centerImageUrl: myStoryLinks.last.photo,
-                              numberOfStatus: myStoryLinks.length,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.1,
+              child: Row(children: [
+                myStoryLinks.isNotEmpty
+                    ? InkWell(
+                        onTap: () {
+                          Get.to(() => const StoriesView(),
+                              arguments: myStoryLinks);
+                        },
+                        child: StatusView(
+                          radius: 25,
+                          centerImageUrl: myStoryLinks.last.photo,
+                          numberOfStatus: myStoryLinks.length,
+                          strokeWidth: 2,
+                        ),
+                      )
+                    : InkWell(
+                        onTap: () async {
+                           final userstory = await StoryServices()
+                                .uploadPhotoToServer( currentuser!);
+        
+                            if (userstory is UserStoryModel) {
+                              setState(() {
+                                myStoryLinks = userstory.stories;
+                              });
+                            }
+                          
+                        },
+                        child: CircleAvatar(
+                          radius: 25,
+                          backgroundImage:
+                              const AssetImage("assets/images/avatar.png"),
+                          child: Stack(
+                            children: const [
+                              Align(
+                                alignment: Alignment.bottomRight,
+                                child: CircleAvatar(
+                                  radius: 10,
+                                  child: Center(child: Icon(Icons.add_rounded)),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                const SizedBox(
+                  width: 10,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 16),
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          "My Status",
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontFamily: "Sans",
+                              fontWeight: FontWeight.w600),
+                        ),
+                        const SizedBox(
+                          height: 5,
+                        ),
+                        Text(
+                          myStoryLinks.isNotEmpty ? "Now" : "Tap To Add Status",
+                          style: const TextStyle(
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ]),
+                ),
+              ]),
+            ),
+        
+            const Text(
+              "Recent Updates",
+              style:
+                  TextStyle(color: Colors.white, fontWeight: FontWeight.w500),
+            ),
+        
+            const SizedBox(
+              height: 10,
+            ),
+        
+            //Listview for displaying status of users which they are in your contacts list
+            usersStory.isNotEmpty
+                ? ListView.separated(
+                    shrinkWrap: true,
+                    itemBuilder: (context, index) {
+                  
+                     
+                        return InkWell(
+                          onTap: (){
+                            Get.to(()=>const StoriesView(),arguments: usersStory[index].stories);
+                          },
+                          child:usersStory[index].stories.isNotEmpty?  Row(
+                          children: [
+                           StatusView(
+                              centerImageUrl: usersStory[index].stories.last.photo,
+                              numberOfStatus: usersStory[index].stories.length,
                               strokeWidth: 2,
-                            ),
-                          )
-                        : InkWell(
-                            onTap: () async {
-                               final userstory = await StoryServices()
-                                    .uploadPhotoToServer( currentuser!);
-          
-                                if (userstory is UserStoryModel) {
-                                  setState(() {
-                                    myStoryLinks = userstory.stories;
-                                  });
-                                }
-                              
-                            },
-                            child: CircleAvatar(
-                              radius: 25,
-                              backgroundImage:
-                                  const AssetImage("assets/images/avatar.png"),
-                              child: Stack(
-                                children: const [
-                                  Align(
-                                    alignment: Alignment.bottomRight,
-                                    child: CircleAvatar(
-                                      radius: 10,
-                                      child: Center(child: Icon(Icons.add_rounded)),
-                                    ),
-                                  ),
+                              radius: 25, 
+                                              
+                              ),
+                            const  SizedBox(width: 5,),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text("${usersStory[index].username}",style: const TextStyle(color: Colors.white,fontWeight: FontWeight.w500),),
                                 ],
                               ),
-                            ),
-                          ),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 16),
-                      child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              "My Status",
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontFamily: "Sans",
-                                  fontWeight: FontWeight.w600),
-                            ),
-                            const SizedBox(
-                              height: 5,
-                            ),
-                            Text(
-                              myStoryLinks.isNotEmpty ? "Now" : "Tap To Add Status",
-                              style: const TextStyle(
-                                color: Colors.grey,
-                              ),
-                            ),
-                          ]),
-                    ),
-                  ]),
-                ),
-          
-                const Text(
-                  "Recent Updates",
-                  style:
-                      TextStyle(color: Colors.white, fontWeight: FontWeight.w500),
-                ),
-          
-                const SizedBox(
-                  height: 10,
-                ),
-          
-                //Listview for displaying status of users which they are in your contacts list
-                usersStory.isNotEmpty
-                    ? ListView.separated(
-                        shrinkWrap: true,
-                        itemBuilder: (context, index) {
+                          ]
+                                              ):Container()
+                        );
+                    
                       
-                         
-                            return InkWell(
-                              onTap: (){
-                                Get.to(()=>const StoriesView(),arguments: usersStory[index].stories);
-                              },
-                              child:usersStory[index].stories.isNotEmpty?  Row(
-                              children: [
-                               StatusView(
-                                  centerImageUrl: usersStory[index].stories.last.photo,
-                                  numberOfStatus: usersStory[index].stories.length,
-                                  strokeWidth: 2,
-                                  radius: 25, 
-                                                  
-                                  ),
-                                const  SizedBox(width: 5,),
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text("${usersStory[index].username}",style: const TextStyle(color: Colors.white,fontWeight: FontWeight.w500),),
-                                    ],
-                                  ),
-                              ]
-                                                  ):Container()
-                            );
-                        
-                          
-              
           
-                        },
-                        separatorBuilder: (context, index) {
-                          return const Divider();
-                        },
-                        itemCount: usersStory.length)
-                    : const CircularProgressIndicator(),
-              ],
-            ),
-          ),
+        
+                    },
+                    separatorBuilder: (context, index) {
+                      return const Divider();
+                    },
+                    itemCount: usersStory.length)
+                : const CircularProgressIndicator(),
+          ],
         ),
       ),
     );
