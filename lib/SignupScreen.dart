@@ -120,9 +120,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   },
                 ),
               const  Spacer(),
-                GetX<AuthServices>(
-                  builder: ((controller) {
-                    return Container(
+               
+                     Container(
                       width: MediaQuery.of(context).size.width * 0.8,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(25),
@@ -138,9 +137,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             disabledForegroundColor: Colors.transparent,
                             shadowColor: Colors.transparent,
                           ),
-                          onPressed: controller.loggedin.value
-                              ? null
-                              : () async {
+                          onPressed: () async {
                                   if (_formKey.currentState!.validate()) {
                                     final respond =
                                         await AuthServices().signUpFunction(
@@ -165,7 +162,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                         SharedPreferences sharedprefs=await SharedPreferences.getInstance();
                                         
                                         objectBox.userBox.put(userBox);
-                                        
+                                        print(objectBox.userBox.getAll() );
 
                                       Get.offAll(() =>const HomeScreen());
                                     } else {
@@ -176,11 +173,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   }
                                 },
                           child: const Text("Sign up")),
-                    );
-                  }),
-                ),
+                    ),
+                  
+                
               ],
-            )),
+      ),
+        ),
       ),
     );
   }

@@ -6,39 +6,53 @@ import 'package:chat_app/AuthScreen.dart';
 import 'package:chat_app/Constants/Constants.dart';
 import 'package:chat_app/Models/User.dart';
 import 'package:chat_app/Services/AuthServices/LoginRespone.dart';
+import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 import '../../HomeScreen.dart';
 
 class AuthServices extends GetxController {
+ 
+  
+   RxList<Contact> contacts=RxList.empty();
+    RxBool islogin=true.obs;
   @override
   void onInit() async {
-    SharedPreferences sharedpref = await SharedPreferences.getInstance();
-    String? token = sharedpref.getString("token");
+    
+    
+        SharedPreferences sharedpref = await SharedPreferences.getInstance();
+      String? token = sharedpref.getString("token");
     String? id=sharedpref.getString("ID");
-   
+
   
     if (token != null && token.isNotEmpty && id!=null) {
       Get.offAll(()=>const HomeScreen());
-        final msg=await AuthServices().RenewToken();
+        final msg=await RenewToken();
+
       
 
   if(msg!=true){
   
-    Get.offAll(()=>const AuthScreen());
+    Get.offAll(()=> AuthScreen());
     sharedpref.remove("token");
     sharedpref.remove("ID");
     
       }
     } else {
-      Get.offAll(() =>const AuthScreen ());
+      Get.offAll(() => AuthScreen ());
     }
     super.onInit();
   }
   
-  RxBool loggedin = false.obs;
+ 
+Future requestContacts ()async{
+await FlutterContacts.requestPermission();
+
+}
+
 
   Future signUpFunction(String username, String password, String email,String phone, String countrycode) async {
     String signupurl = "${await Constants().detectDevice()}/user/adduser";
@@ -57,13 +71,13 @@ class AuthServices extends GetxController {
         body: json.encode(usermodel.userToJson()));
     if (response.statusCode == 200) {
       final data = loginResponseFromJson(response.body);
-    
+    print(" data . usr .id ${data.user.id}");
       saveTokenLocally(data.token);
       saveIDLoggedInUser(data.user.id);
-      loggedin.value = true;
+
       return [true,data];
     } else {
-      loggedin.value = false;
+      
       return [false,jsonDecode(response.body)["msg"]];
     }
   }
@@ -115,14 +129,13 @@ else
   });
   
   if (response.statusCode == 200) {
-    loggedin.value = true;
+   
 
     final data = loginResponseFromJson(response.body);
     saveTokenLocally(data.token);
     saveIDLoggedInUser(data.user.id);
     return [true,data];
   } else {
-    loggedin.value = false;
     return [false,jsonDecode(response.body)["msg"]];
   }
 } 

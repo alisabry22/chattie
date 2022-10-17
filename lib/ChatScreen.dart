@@ -1,16 +1,20 @@
 
 
 import 'package:chat_app/Services/MessageServices/MessageServices.dart';
-import 'package:chat_app/main.dart';
+import 'package:chat_app/socketServices/socketservices.dart';
 import 'package:chat_bubbles/bubbles/bubble_special_three.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:socket_io_client/socket_io_client.dart';
 
 class ChatScreen extends GetView<MessageServices>{
+
+
 
  
   @override
   Widget build(BuildContext context) {
+   
    
     final size = MediaQuery.of(context).size;
     final messageController = TextEditingController();
@@ -34,16 +38,16 @@ class ChatScreen extends GetView<MessageServices>{
                         if(index==controller.messages.length){
                           return Container(height: 50,);
                         }
-                        bool issender = false;
+                        
                         if (controller.messages[index].senderData.id == controller.currentuser.value) {
-                          issender = true;
-                        }
+                          controller.issender.value = true;
+                        } 
                         return BubbleSpecialThree(
                           text:controller. messages[index].message,
                           tail: false,
                           textStyle:const TextStyle(fontSize: 16),
-                          color: issender ?const Color(0xFF1B97F3) :const Color(0xFFE8E8EE),
-                          isSender: issender,
+                          color: controller.issender.value ?const Color(0xFF1B97F3) :const Color(0xFFE8E8EE),
+                          isSender: controller.issender.value,
                         );
                       });
                 },
@@ -75,10 +79,12 @@ class ChatScreen extends GetView<MessageServices>{
                   backgroundColor: Colors.blue,
                   child: IconButton(
                       onPressed: () {
-                    
-                 
                   
-                        socket.emit("sendMessage", {
+                    Socket socket=Get.find<SocketServices>().socket;
+                        
+                  
+                       
+                       socket.emit("sendMessage", {
                           "content": messageController.text.trim(),
                           "sender": controller.currentuser.value,
                           "chatId":controller.chatId.value,

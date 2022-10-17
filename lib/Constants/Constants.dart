@@ -14,7 +14,7 @@ class Constants{
     if(androidinfo.isPhysicalDevice!=null ){
      bool? physicaldevice=androidinfo.isPhysicalDevice;
      if(physicaldevice==true)
-      return url="http://192.168.53.157:3000/api";
+      return url="http://192.168.1.70:3000/api";
       else
       return url="http://10.0.2.2:3000/api";
     }

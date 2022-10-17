@@ -1,83 +1,22 @@
-import 'package:chat_app/Models/StoryModel.dart';
-import 'package:chat_app/Models/User.dart';
 import 'package:chat_app/Services/StoryServices/StoryServices.dart';
-import 'package:chat_app/Services/storyresponse/storyResponse.dart';
 import 'package:chat_app/Services/storyresponse/user_story_model.dart';
 import 'package:chat_app/StoriesView.dart';
-import 'package:chat_app/main.dart';
-import 'package:chat_app/objectbox.g.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:status_view/status_view.dart';
 
-import 'Models/ObjectBox/UserBox.dart';
 
-class StatusPage extends StatefulWidget {
-  const StatusPage({Key? key}) : super(key: key);
+class StatusPage extends GetView<StoryServices> {
 
-  @override
-  State<StatusPage> createState() => _StatusPageState();
-}
 
-class _StatusPageState extends State<StatusPage> {
   final ImagePicker imagePicker = ImagePicker();
-  List<StoryModel> myStoryLinks = [];
   String? currentuser;
   List<String> phones = [];
-  List<StoryModel> stories = [];
-  List<UserStoryModel> usersStory = [];
-  @override
-  void initState() {
-    super.initState();
-    getAllMyStories();
-    getCurrentUser();
-    getOthersStory();
-  }
 
-  Future getAllMyStories() async {
-    final data = await StoryServices().getmyAllStories();
-    if (data != null && data is UserStoryModel) {
-      setState(() {
-        myStoryLinks = data.stories;
-      });
-    }
-   
-  }
 
-Future getOthersStory()async{
-   SharedPreferences sharedprefs = await SharedPreferences.getInstance();
- String? id = sharedprefs.getString("ID");
 
-Query<UserBox> query=objectBox.userBox.query(UserBox_.userID.equals(currentuser!)).build();
-UserBox? userBox=query.findFirst();
-     var data = await StoryServices()
-        .getOthersStory(objectBox.userBox.get(userBox!.id)!.phones);
 
-        
-    if (data is StoryResponse && data.users != null) {
-
-      setState(() {
-        usersStory = data.users!;
-      });
-    } else {
-    Get.snackbar("Error", data.toString(),snackPosition: SnackPosition.BOTTOM,duration: const Duration(milliseconds: 300));
-    }
-}
-  Future getCurrentUser() async {
-      SharedPreferences sharedprefs = await SharedPreferences.getInstance();
-
-    String? userid = sharedprefs.getString("ID");
-
-   
-
-    if (userid != null) {
-      setState(() {
-        currentuser = userid;
-      });
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -98,76 +37,82 @@ UserBox? userBox=query.findFirst();
           children: [
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.1,
-              child: Row(children: [
-                myStoryLinks.isNotEmpty
-                    ? InkWell(
-                        onTap: () {
-                          Get.to(() => const StoriesView(),
-                              arguments: myStoryLinks);
-                        },
-                        child: StatusView(
-                          radius: 25,
-                          centerImageUrl: myStoryLinks.last.photo,
-                          numberOfStatus: myStoryLinks.length,
-                          strokeWidth: 2,
-                        ),
-                      )
-                    : InkWell(
-                        onTap: () async {
-                           final userstory = await StoryServices()
-                                .uploadPhotoToServer( currentuser!);
-        
-                            if (userstory is UserStoryModel) {
-                              setState(() {
-                                myStoryLinks = userstory.stories;
-                              });
-                            }
-                          
-                        },
-                        child: CircleAvatar(
-                          radius: 25,
-                          backgroundImage:
-                              const AssetImage("assets/images/avatar.png"),
-                          child: Stack(
-                            children: const [
-                              Align(
-                                alignment: Alignment.bottomRight,
-                                child: CircleAvatar(
-                                  radius: 10,
-                                  child: Center(child: Icon(Icons.add_rounded)),
+              child: GetX<StoryServices>(
+                builder: (controller){
+                  return     Row(children: [
+                  
+                     controller.myStoryLinks.isNotEmpty ? InkWell(
+                          onTap: () {
+                            Get.to(() => const StoriesView(),
+                                arguments: controller.myStoryLinks);
+                          },
+                          child: StatusView(
+                            radius: 25,
+                            centerImageUrl: controller.myStoryLinks.last.photo,
+                            numberOfStatus: controller.myStoryLinks.length,
+                            strokeWidth: 2,
+                          ),
+                        )
+                      : InkWell(
+                          onTap: () async {
+                             final userstory = await StoryServices()
+                                  .uploadPhotoToServer( controller.currentuser.value);
+                      
+                              if (userstory is UserStoryModel) {
+                                
+                                  controller.myStoryLinks.value = userstory.stories;
+                            
+                              }
+                            
+                          },
+                          child: CircleAvatar(
+                            radius: 25,
+                            backgroundImage:
+                                const AssetImage("assets/images/avatar.png"),
+                            child: Stack(
+                              children: const [
+                                Align(
+                                  alignment: Alignment.bottomRight,
+                                  child: CircleAvatar(
+                                    radius: 10,
+                                    child: Center(child: Icon(Icons.add_rounded)),
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                const SizedBox(
-                  width: 10,
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 16),
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          "My Status",
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontFamily: "Sans",
-                              fontWeight: FontWeight.w600),
-                        ),
-                        const SizedBox(
-                          height: 5,
-                        ),
-                        Text(
-                          myStoryLinks.isNotEmpty ? "Now" : "Tap To Add Status",
-                          style: const TextStyle(
-                            color: Colors.grey,
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 16),
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            "My Status",
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontFamily: "Sans",
+                                fontWeight: FontWeight.w600),
                           ),
-                        ),
-                      ]),
-                ),
-              ]),
+                          const SizedBox(
+                            height: 5,
+                          ),
+                          Text(
+                            controller.myStoryLinks.isNotEmpty ? "Now" : "Tap To Add Status",
+                            style: const TextStyle(
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ]),
+                  ),
+                ]);
+
+                },
+              
+              ),
             ),
         
             const Text(
@@ -181,45 +126,50 @@ UserBox? userBox=query.findFirst();
             ),
         
             //Listview for displaying status of users which they are in your contacts list
-            usersStory.isNotEmpty
-                ? ListView.separated(
-                    shrinkWrap: true,
-                    itemBuilder: (context, index) {
-                  
-                     
-                        return InkWell(
-                          onTap: (){
-                            Get.to(()=>const StoriesView(),arguments: usersStory[index].stories);
-                          },
-                          child:usersStory[index].stories.isNotEmpty?  Row(
-                          children: [
-                           StatusView(
-                              centerImageUrl: usersStory[index].stories.last.photo,
-                              numberOfStatus: usersStory[index].stories.length,
-                              strokeWidth: 2,
-                              radius: 25, 
-                                              
-                              ),
-                            const  SizedBox(width: 5,),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text("${usersStory[index].username}",style: const TextStyle(color: Colors.white,fontWeight: FontWeight.w500),),
-                                ],
-                              ),
-                          ]
-                                              ):Container()
-                        );
-                    
-                      
           
-        
-                    },
-                    separatorBuilder: (context, index) {
-                      return const Divider();
-                    },
-                    itemCount: usersStory.length)
-                : const CircularProgressIndicator(),
+                 GetX<StoryServices>(
+                  builder: (controller){
+                    return  ListView.separated(
+                      shrinkWrap: true,
+                      itemBuilder: (context, index) {
+                    
+                       
+                          return InkWell(
+                            onTap: (){
+                              Get.to(()=>const StoriesView(),arguments: controller.usersStory[index].stories);
+                            },
+                            child:controller.usersStory[index].stories.isNotEmpty?  Row(
+                            children: [
+                             StatusView(
+                                centerImageUrl: controller.usersStory[index].stories.last.photo,
+                                numberOfStatus: controller.usersStory[index].stories.length,
+                                strokeWidth: 2,
+                                radius: 25, 
+                                                
+                                ),
+                              const  SizedBox(width: 5,),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text("${controller.usersStory[index].username}",style: const TextStyle(color: Colors.white,fontWeight: FontWeight.w500),),
+                                  ],
+                                ),
+                            ]
+                                                ):Container()
+                          );
+                      
+                        
+                           
+                         
+                      },
+                      separatorBuilder: (context, index) {
+                        return const Divider();
+                      },
+                      itemCount: controller.usersStory.length);
+                  },
+                  
+                 )
+              
           ],
         ),
       ),

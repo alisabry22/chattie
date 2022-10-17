@@ -4,29 +4,19 @@ import 'package:chat_app/SignupScreen.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
+import 'package:get/get.dart';
 
-class AuthScreen extends StatefulWidget {
-  const AuthScreen({super.key});
+import 'Services/AuthServices/AuthServices.dart';
 
-  @override
-  State<AuthScreen> createState() => _AuthScreenState();
-}
+class AuthScreen extends GetView<AuthServices>{
 
-class _AuthScreenState extends State<AuthScreen> {
+
   bool isLoggin = true;
  final loginkey=GlobalKey<FormState>();
   final Registerkey=GlobalKey<FormState>();
-  late List<Contact> contacts;
-  @override
-  void initState() {
-   
-    super.initState();
-    requestContacts();
-  }
-Future requestContacts ()async{
-await FlutterContacts.requestPermission();
 
-}
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -47,51 +37,52 @@ await FlutterContacts.requestPermission();
             Color(0xff16213E),
           ]),
         ),
-        child: SingleChildScrollView(
-          child: Column(
-            
-            children: [
-              SizedBox(height: MediaQuery.of(context).size.height*0.1,),
-            Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-              TextButton(
-                onPressed: () {
-                  setState(() {
-                    isLoggin = true;
-                  });
-                },
-                child: const Text(
-                  "Login",
-                  style: TextStyle(color: Colors.white),
+        child: GetX<AuthServices>(
+          builder: (controller) {
+            return   SingleChildScrollView(
+            child: Column(
+              
+              children: [
+                SizedBox(height: MediaQuery.of(context).size.height*0.1,),
+              Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                TextButton(
+                  onPressed: () {
+                    controller.islogin.value=true;
+                  },
+                  child: const Text(
+                    "Login",
+                    style: TextStyle(color: Colors.white),
+                  ),
                 ),
-              ),
-              const SizedBox(
-                width: 10,
-              ),
-              TextButton(
-                onPressed: () {
-                  setState(() {
-                    isLoggin = false;
-                  });
-                },
-                child: const Text(
-                  "Signup",
-                  style: TextStyle(color: Colors.white),
+                const SizedBox(
+                  width: 10,
                 ),
-              ),
+                TextButton(
+                  onPressed: () {
+                   controller.islogin.value=false;
+                  },
+                  child: const Text(
+                    "Signup",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              ]),
+              PageTransitionSwitcher(
+                  duration: Duration(milliseconds: 500),
+                  reverse: !controller.islogin.value,
+                  transitionBuilder: (child, animation, secondaryAnimation) {
+                    return SharedAxisTransition(
+                      animation: animation,
+                      secondaryAnimation: secondaryAnimation,
+                      transitionType: SharedAxisTransitionType.horizontal,
+                      child: child,
+                    );
+                  },
+                  child: controller.islogin.value ? const LoginScreen() : const SignUpScreen()),
             ]),
-            PageTransitionSwitcher(
-                duration: Duration(milliseconds: 500),
-                reverse: !isLoggin,
-                transitionBuilder: (child, animation, secondaryAnimation) {
-                  return SharedAxisTransition(
-                    animation: animation,
-                    secondaryAnimation: secondaryAnimation,
-                    transitionType: SharedAxisTransitionType.horizontal,
-                    child: child,
-                  );
-                },
-                child: isLoggin ? const LoginScreen() : const SignUpScreen()),
-          ]),
+          );
+          },
+         
         ),
       ),
     );

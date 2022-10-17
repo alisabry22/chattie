@@ -2,24 +2,31 @@ import 'dart:convert';
 
 import 'package:chat_app/Constants/Constants.dart';
 import 'package:chat_app/Models/MessageModel.dart';
+import 'package:chat_app/Services/AuthServices/AuthServices.dart';
 import 'package:chat_app/Services/ChatServices/chatresponse.dart';
+import 'package:chat_app/socketServices/socketservices.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:socket_io_client/socket_io_client.dart';
 
 import '../../Models/ChatModel.dart';
-import '../../main.dart';
 
 class ChatServices extends GetxController{
 
  RxList<ChatModel>chats=<ChatModel>[].obs;
   RxString currentUserID="".obs;
  @override
-  void onInit() {
+  void onInit()async {
+    Get.put<SocketServices>(SocketServices());
     super.onInit();
+ SharedPreferences sharedPrefs = await SharedPreferences.getInstance();
+    if(sharedPrefs.getString("ID")!=null) {
+      currentUserID.value = sharedPrefs.getString("ID")!;
+    }
     getAllChats();
     socketservice();
-    getCurrentUser();
+   
   }
   Future  createChat (String recieverid)async{
 
@@ -56,42 +63,51 @@ print(e.toString());}
 
   
   void socketservice(){
-    print(socket.connected);
+  Socket socket=  Get.find<SocketServices>().socket;
       socket.on("latestmessage",(message){
 
       MessageModel messageModel=MessageModel.fromJson(message);
-   print("message last $messageModel");
     
   int index=0;
 
-  print("index $index");   index= chats.indexWhere((element) => element.id==messageModel.chatId);
+ 
+  index= chats.indexWhere((element) => element.id==messageModel.chatId);
 
 
     chats.elementAt(index).messageModel=messageModel;
     chats.refresh();
+
+
+  });
+
+  socket.on("createdchat", (data) {
+    ChatModel chatModel=ChatModel.fromJson(data as Map<String,dynamic>);
+ 
+    chats.add(chatModel);
+  });
+
+  socket.on("deletedchat", (data) {
+    
+  
+    if(chats.isNotEmpty){
+      int index =chats.indexWhere((element) =>element.id==data.toString());
+      chats.removeAt(index);
+    }
+ 
   });
   }
 
-   getCurrentUser() async {
-    SharedPreferences sharedPrefs = await SharedPreferences.getInstance();
-    if(sharedPrefs.getString("ID")!=null) {
-      currentUserID.value = sharedPrefs.getString("ID")!;
-    }
-  
-  }
+
 
 
   Future getAllChats()async{
+    print("get all chats called");
 
     String createChatapi="${await Constants().detectDevice()}/chat/";
 SharedPreferences sharedprefs=await SharedPreferences.getInstance();
 String? token=sharedprefs.getString("token");
 
 
- 
-
-  
-  
 
   try {
   final response=await http.get(Uri.parse(createChatapi),headers: {
@@ -102,6 +118,7 @@ String? token=sharedprefs.getString("token");
    if(response.statusCode==200){
     final data=chatResponseFromJson(response.body);
   chats.value=data.chats;
+  update();
 
    }
    else{
