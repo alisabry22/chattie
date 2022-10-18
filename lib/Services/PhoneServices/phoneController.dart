@@ -19,11 +19,14 @@ class phoneController extends GetxController{
     RxList<Contact> contacts =RxList.empty();
     RxBool issearching = false.obs;
       RxList<User> users = RxList.empty();
+      RxString userID="".obs;
   var responsePhoneController;
 
 @override
-  void onInit() {
-    
+  void onInit()async {
+         SharedPreferences sharedprefs=await SharedPreferences.getInstance();
+        userID.value = sharedprefs.getString("ID")!;
+        userID.refresh();
     super.onInit();
     requestContacts();
     getPhonesList(contacts);
@@ -75,7 +78,7 @@ on SocketException catch(e){
     
 
   void   requestContacts() async {
-       SharedPreferences sharedprefs=await SharedPreferences.getInstance();
+  
     if (await FlutterContacts.requestPermission()) {
       List<Contact> democontact = await FlutterContacts.getContacts(withProperties: true);
 
@@ -86,10 +89,11 @@ element.phones.forEach((phone) {
 });
  });
  
- String? id = sharedprefs.getString("ID");
+ 
 
-Query<UserBox> query=objectBox.userBox.query(UserBox_.userID.equals(id!)).build();
+Query<UserBox> query=objectBox.userBox.query(UserBox_.userID.equals(userID.value)).build();
 UserBox? userBox=query.findFirst();
+
 
   userBox!.phones=phones.toSet().toList();
   objectBox.userBox.put(userBox);

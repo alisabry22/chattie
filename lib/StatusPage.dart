@@ -1,22 +1,16 @@
 import 'package:chat_app/Services/StoryServices/StoryServices.dart';
 import 'package:chat_app/Services/storyresponse/user_story_model.dart';
 import 'package:chat_app/StoriesView.dart';
+import 'package:chat_app/myStatus.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:status_view/status_view.dart';
 
-
 class StatusPage extends GetView<StoryServices> {
-
-
   final ImagePicker imagePicker = ImagePicker();
   String? currentuser;
   List<String> phones = [];
-
-
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -38,138 +32,170 @@ class StatusPage extends GetView<StoryServices> {
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.1,
               child: GetX<StoryServices>(
-                builder: (controller){
-                  return     Row(children: [
-                  
-                     controller.myStoryLinks.isNotEmpty ? InkWell(
+                builder: (controller) {
+                  return controller.myStoryLinks.isNotEmpty
+                      ? InkWell(
                           onTap: () {
                             Get.to(() => const StoriesView(),
                                 arguments: controller.myStoryLinks);
                           },
-                          child: StatusView(
-                            radius: 25,
-                            centerImageUrl: controller.myStoryLinks.last.photo,
-                            numberOfStatus: controller.myStoryLinks.length,
-                            strokeWidth: 2,
-                          ),
-                        )
-                      : InkWell(
-                          onTap: () async {
-                             final userstory = await StoryServices()
-                                  .uploadPhotoToServer( controller.currentuser.value);
-                      
-                              if (userstory is UserStoryModel) {
-                                
-                                  controller.myStoryLinks.value = userstory.stories;
-                            
-                              }
-                            
-                          },
-                          child: CircleAvatar(
-                            radius: 25,
-                            backgroundImage:
-                                const AssetImage("assets/images/avatar.png"),
-                            child: Stack(
-                              children: const [
-                                Align(
-                                  alignment: Alignment.bottomRight,
-                                  child: CircleAvatar(
-                                    radius: 10,
-                                    child: Center(child: Icon(Icons.add_rounded)),
+                          child: Row(
+                            children: [
+                              Container(
+                                width: MediaQuery.of(context).size.width * 0.8,
+                                child: Row(children: [
+                                  StatusView(
+                                    radius: 25,
+                                    centerImageUrl:
+                                        controller.myStoryLinks.last.photo,
+                                    numberOfStatus:
+                                        controller.myStoryLinks.length,
+                                    strokeWidth: 2,
                                   ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 16),
-                    child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            "My Status",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontFamily: "Sans",
-                                fontWeight: FontWeight.w600),
-                          ),
-                          const SizedBox(
-                            height: 5,
-                          ),
-                          Text(
-                            controller.myStoryLinks.isNotEmpty ? "Now" : "Tap To Add Status",
-                            style: const TextStyle(
-                              color: Colors.grey,
-                            ),
-                          ),
-                        ]),
-                  ),
-                ]);
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                        left: 10, top: 15),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: const [
+                                        Text(
+                                          "My Status",
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontFamily: "Sans",
+                                              fontWeight: FontWeight.w600),
+                                        ),
+                                        SizedBox(height: 5,),
+                                        Text(
+                                          "Now",
+                                          style: TextStyle(
+                                              color: Colors.grey,
+                                              fontFamily: "Sans",
+                                              fontWeight: FontWeight.w600),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ]),
+                              ),
+                              InkWell(
+                                onTap: (){
+                                  Get.to(()=> const MyStatus());
+                                },
+                                  child: const Icon(Icons.more_horiz,
+                                      color: Colors.white)),
+                            ],
+                          ))
+                      : InkWell(
+                          onTap: ()  {
+                              controller.uploadPhotoToServer(controller.currentuser.value);
 
+                          
+                          },
+                          child: Row(
+                            children: [
+                              CircleAvatar(
+                                radius: 25,
+                                backgroundImage: const AssetImage(
+                                    "assets/images/avatar.png"),
+                                child: Stack(
+                                  children: const [
+                                    Align(
+                                      alignment: Alignment.bottomRight,
+                                      child: CircleAvatar(
+                                        radius: 10,
+                                        child: Center(
+                                            child: Icon(Icons.add_rounded)),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(top: 16),
+                                child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: const [
+                                      SizedBox(
+                                        height: 5,
+                                      ),
+                                      Text(
+                                        "Tap To Add Status",
+                                        style: TextStyle(
+                                          color: Colors.grey,
+                                        ),
+                                      ),
+                                    ]),
+                              ),
+                            ],
+                          ),
+                        );
                 },
-              
               ),
             ),
-        
+
             const Text(
               "Recent Updates",
               style:
                   TextStyle(color: Colors.white, fontWeight: FontWeight.w500),
             ),
-        
+
             const SizedBox(
               height: 10,
             ),
-        
+
             //Listview for displaying status of users which they are in your contacts list
-          
-                 GetX<StoryServices>(
-                  builder: (controller){
-                    return  ListView.separated(
-                      shrinkWrap: true,
-                      itemBuilder: (context, index) {
-                    
-                       
-                          return InkWell(
-                            onTap: (){
-                              Get.to(()=>const StoriesView(),arguments: controller.usersStory[index].stories);
-                            },
-                            child:controller.usersStory[index].stories.isNotEmpty?  Row(
-                            children: [
-                             StatusView(
-                                centerImageUrl: controller.usersStory[index].stories.last.photo,
-                                numberOfStatus: controller.usersStory[index].stories.length,
-                                strokeWidth: 2,
-                                radius: 25, 
-                                                
-                                ),
-                              const  SizedBox(width: 5,),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text("${controller.usersStory[index].username}",style: const TextStyle(color: Colors.white,fontWeight: FontWeight.w500),),
-                                  ],
-                                ),
-                            ]
-                                                ):Container()
-                          );
-                      
-                        
-                           
-                         
-                      },
-                      separatorBuilder: (context, index) {
-                        return const Divider();
-                      },
-                      itemCount: controller.usersStory.length);
-                  },
-                  
-                 )
-              
+
+            GetX<StoryServices>(
+              builder: (controller) {
+                return ListView.separated(
+                    shrinkWrap: true,
+                    itemBuilder: (context, index) {
+                      return InkWell(
+                          onTap: () {
+                            Get.to(() => const StoriesView(),
+                                arguments:
+                                    controller.usersStory[index].stories);
+                          },
+                          child: controller.usersStory[index].stories.isNotEmpty
+                              ? Row(children: [
+                                  StatusView(
+                                    centerImageUrl: controller
+                                        .usersStory[index].stories.last.photo,
+                                    numberOfStatus: controller
+                                        .usersStory[index].stories.length,
+                                    strokeWidth: 2,
+                                    radius: 25,
+                                  ),
+                                  const SizedBox(
+                                    width: 5,
+                                  ),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "${controller.usersStory[index].username}",
+                                        style: const TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.w500),
+                                      ),
+                                    ],
+                                  ),
+                                ])
+                              : Container());
+                    },
+                    separatorBuilder: (context, index) {
+                      return const Divider();
+                    },
+                    itemCount: controller.usersStory.length);
+              },
+            )
           ],
         ),
       ),
