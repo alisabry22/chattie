@@ -3,6 +3,8 @@ import 'package:chat_app/CallsPage.dart';
 import 'package:chat_app/ChatRooms.dart';
 import 'package:chat_app/ContactsScreen.dart';
 import 'package:chat_app/StatusPage.dart';
+import 'package:chat_app/main.dart';
+import 'package:chat_app/objectbox.g.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
@@ -25,17 +27,12 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
   Store? store;
   bool isStoreInitialized = false;
   List<UserBox>? users;
-  int tabindex=0;
   @override
   void initState() {
-    tabindex=0;
         super.initState();
     tabController = TabController(length: 3, vsync: this, initialIndex: 0);
       tabController.addListener(() {
-   
-    setState(() {
-      tabindex=tabController.index;
-    });
+
   });
   getCurrentUser();
 
@@ -55,19 +52,19 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: _buildFloatingActionButtons(),
+  
       appBar: AppBar(
         backgroundColor:const Color(0xff002B5B),
         actions: [
           IconButton(onPressed: () {}, icon:const Icon(Icons.search)),
           PopupMenuButton(
             itemBuilder: (context) {
-              return const [
-                PopupMenuItem(
+              return  [
+               const PopupMenuItem(
                   value: 1,
                   child: Text("New Group"),
                 ),
-                PopupMenuItem(
+              const  PopupMenuItem(
                  
                   value: 2,
                    child: Text("Settings"),
@@ -76,6 +73,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                   
                   value: 3,
                   child:  Text("Logout"),
+                 
                 ),
               ];
             },
@@ -86,6 +84,10 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                 sharedprefs.remove("token");
                 sharedprefs.remove("ID");
                 Get.offAll(() => AuthScreen());
+                  Query query=objectBox.userBox.query(UserBox_.userID.equals(currentuser.toString())).build();
+                    UserBox userBox=query.findFirst();
+                    objectBox.userBox.remove(userBox.id);
+                    objectBox.userBox.removeAll();
               }
             }),
           ),
@@ -94,9 +96,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
         bottom: TabBar(
 
           onTap: (index){
-            setState(() {
-              tabindex=index;
-            });
+         
           },
           controller: tabController,
           tabs: const [
@@ -124,34 +124,5 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
     );
   }
 
-  Widget _buildFloatingActionButtons() {
-    return tabindex == 0
-        ? FloatingActionButton(
-            onPressed: () {
-              Get.to(()=> ContactsScreen());
-            },
-            child:const Icon(Icons.chat),
-          )
-        : tabindex == 1
-            ? Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                FloatingActionButton(
-                  heroTag: "pen",
-                    onPressed: () {},
-                    child:const Icon(FontAwesomeIcons.pen),
-                  ),
-                 const SizedBox(height: 5,),
-                  FloatingActionButton(
-                    heroTag: "camera",
-                    onPressed: ()async {
-                          final userstory = await StoryServices()
-                                .uploadPhotoToServer( currentuser);
-                    },
-                    child:const Icon(Icons.camera_alt),
-                  ),
-              ],
-            )
-            : FloatingActionButton(onPressed: () {},child:const Icon(FontAwesomeIcons.phone),);
-  }
+
 }

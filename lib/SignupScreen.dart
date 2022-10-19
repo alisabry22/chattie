@@ -158,11 +158,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                           email: emailController.text,
                                           phone: phoneController.text.trim(),
                                           countrycode: countryCode,
-                                          phones: [],   );
-                                        SharedPreferences sharedprefs=await SharedPreferences.getInstance();
+                                          phones: [],
+                                           );
+                                      objectBox.userBox.put(userBox);
+                                        objectBox.userBox.getAll().forEach((element) {
+                                          print(element.id);
                                         
-                                        objectBox.userBox.put(userBox);
-                                        print(objectBox.userBox.getAll() );
+                                        });
 
                                       Get.offAll(() =>const HomeScreen());
                                     } else {

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:chat_app/Models/User.dart';
 
 class StoryModel{
@@ -13,10 +15,22 @@ StoryModel({
   required this.user
 });
 
-  StoryModel.fromJson(Map<String,dynamic>json):
-  id=json["_id"],
-  photo=json["storyLink"],
-  user=json["userId"]!=null?User.fromJson(json["userId"]):User(username: "", email: "", phone: "", countrycode: "");
+ factory StoryModel.fromJsonallusers(Map<String,dynamic>json){
+ final id=json["_id"];
+ final photo=json["storyLink"];
+ return StoryModel(photo: photo, id: id, user: User(email: "",countrycode: "",phone: "",id: "",username: ""));
+
+ }
+
+
+ factory StoryModel.fromJsonAddedStory(Map<String,dynamic>json){
+  final id=json["_id"];
+ final photo=json["storyLink"];
+ final user=json["userId"]!=null ?User.fromJson(json["userId"]): User(username: "", email: "", phone: "", countrycode: "");
+ return StoryModel(photo: photo, id: id, user: user);
+ }
+
+
 
 
 }

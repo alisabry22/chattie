@@ -20,6 +20,7 @@ class phoneController extends GetxController{
     RxBool issearching = false.obs;
       RxList<User> users = RxList.empty();
       RxString userID="".obs;
+      RxList<User>searchedphones=RxList.empty();
   var responsePhoneController;
 
 @override
@@ -59,8 +60,9 @@ class phoneController extends GetxController{
   if(response.statusCode==200){
   
    final data= phoneResponseFromJson(response.body);
-   print(data);
-  
+ 
+    searchedphones.value=data.user;
+    searchedphones.refresh();
     return data.user;
   }
   else{

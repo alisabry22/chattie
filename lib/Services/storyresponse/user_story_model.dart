@@ -20,7 +20,7 @@ class UserStoryModel {
     final phone=json["phone"];
     final countrycode=json["countrycode"];
     final userstories=(json["stories"]??[])as List<dynamic>;
-    final stories=userstories.isNotEmpty?userstories.map<StoryModel>((e) => StoryModel.fromJson(e),).toList():<StoryModel>[];
+    final stories=userstories.isNotEmpty?userstories.map<StoryModel>((e) => StoryModel.fromJsonallusers(e),).toList():<StoryModel>[];
     return UserStoryModel(
         userId: userId,
         email: email,

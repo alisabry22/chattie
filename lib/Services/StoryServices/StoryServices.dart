@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:chat_app/Constants/Constants.dart';
 import 'package:chat_app/Models/StoryModel.dart';
 import 'package:chat_app/Services/AuthServices/AuthServices.dart';
+import 'package:chat_app/Services/PhoneServices/phoneController.dart';
 import 'package:chat_app/Services/storyresponse/storyResponse.dart';
 import 'package:chat_app/Services/storyresponse/user_story_model.dart';
 import 'package:chat_app/main.dart';
@@ -16,6 +17,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:socket_io_client/socket_io_client.dart';
 
 import '../../Models/ObjectBox/UserBox.dart';
+import '../../Models/User.dart';
 import '../../socketServices/socketservices.dart';
 
 class StoryServices extends GetxController {
@@ -23,6 +25,7 @@ class StoryServices extends GetxController {
   RxList<UserStoryModel> usersStory = RxList.empty();
   RxString currentuser = "".obs;
   RxString token = "".obs;
+  RxList<User>searchedusers=RxList.empty();
   @override
   void onInit() async {
     SharedPreferences sharedPrefs = await SharedPreferences.getInstance();
@@ -30,11 +33,14 @@ class StoryServices extends GetxController {
         sharedPrefs.getString("token") != null) {
       currentuser.value = sharedPrefs.getString("ID")!;
       token.value = sharedPrefs.getString("token")!;
-    }
+      
+          }
     super.onInit();
     getmyAllStories();
     getOthersStory();
     storySocketService();
+
+
   }
 
   Future uploadStoryToCloud(XFile file, String id) async {
@@ -52,18 +58,17 @@ class StoryServices extends GetxController {
   }
 
   void storySocketService() {
+   searchedusers.value= Get.find<phoneController>().searchedphones;
+   searchedusers.refresh();
+   
     Socket socket = Get.find<SocketServices>().socket;
 
-    socket.on("insertedStory", (data) {
-      print("insertstory event");
-      print(data as Map<String, dynamic>);
-      StoryModel storyModel = StoryModel.fromJson(data as Map<String, dynamic>);
+    socket.on("insertedStory", (data)async {
 
-      final query = objectBox.userBox
-          .query(UserBox_.phones.contains(storyModel.user.phone))
-          .build();
-             final users = query.find();
-             List<StoryModel> stories=[];
+     
+      print(data as Map<String, dynamic>);
+      StoryModel storyModel = StoryModel.fromJsonAddedStory(data as Map<String, dynamic>);
+            List<StoryModel> stories=[];
              stories.add(storyModel);
       UserStoryModel userStoryModel = UserStoryModel(
           userId: storyModel.user.id,
@@ -72,25 +77,64 @@ class StoryServices extends GetxController {
           phone: storyModel.user.phone,
           countrycode: storyModel.user.countrycode,
           stories: stories);
+            
    
+  if(storyModel.user.id==currentuser.value){
+    myStoryLinks.add(storyModel);
+    myStoryLinks.refresh();
+  }else{
+    getOthersStory();
+// if(usersStory.isNotEmpty){
 
-    if(usersStory.isNotEmpty){
-      users.forEach((element) {
-      int index=  usersStory.indexWhere((userstory) => userstory.userId==element.userID);
-      if(index!=-1){
-        usersStory[index].stories.add(storyModel);
-        usersStory.refresh();
-      }else{
-        usersStory.add(userStoryModel);
-           usersStory.refresh();
-      }
-      });
-    }else{
-      usersStory.add(userStoryModel);
-      usersStory.refresh();
-    }
+//   //   searchedusers.forEach((element) {
+//   //     int index=0;
+    
+//   //  index=usersStory.indexWhere((singleuser) => singleuser.userId==element.id);
+//   //  print(index);
+//   //  if(index!=-1){
+
+//   //   usersStory[index].stories.add(storyModel);
+//   //   usersStory.refresh();
+//   //  }else{
+
+//   //   usersStory.add(userStoryModel);
+//   //   usersStory.refresh();
+//   //  }
+//   //   });
+       
+//   }
+    
+  }
+  
+
+
+// Query query=objectBox.userBox.query().build();
+// UserBox user=query.findFirst();
+
+
+    // if(usersStory.isNotEmpty){
+    //   print("user story not empty");
+    //   user.phones.forEach((element) {
+    //  int index=usersStory.indexWhere((element) => element.phone==storyModel.user.phone);
+    //  print("index of user is $index");
+    //   if(index!=-1){
+    //     usersStory[index].stories.add(storyModel);
+    //     usersStory.refresh();
+    //   }else{
+    //     usersStory.add(userStoryModel);
+    //        usersStory.refresh();
+    //   }
+    //   });
+    // }else{
+    //   usersStory.add(userStoryModel);
+    //   usersStory.refresh();
+    // }
+  });
+
+
+
      
-    });
+  
 
     socket.on("deletedStory", (data) {
       if (myStoryLinks.isNotEmpty) {
@@ -149,7 +193,6 @@ class StoryServices extends GetxController {
           headers: {"Authorization": "Bearer ${token.value}"});
 
       if (response.statusCode == 200) {
-        print(jsonDecode(response.body)["stories"]);
         final data = StoryResponseFromJsonCurrentUser(response.body);
 
         myStoryLinks.value = data.currentuser!.stories;
@@ -167,27 +210,32 @@ class StoryServices extends GetxController {
         .query(UserBox_.userID.equals(currentuser.value))
         .build();
 
-    UserBox? userBox = query.findFirst();
+   UserBox? userBox = query.findFirst();
 
-    List<String> phones = objectBox.userBox.get(userBox!.id)!.phones;
+   List<String> phones = objectBox.userBox.get(userBox!.id)!.phones;
     String storyurls =
         "${await Constants().detectDevice()}/story/getotherstory";
 
  
-      final response = await http.post(Uri.parse(storyurls),
-          body: json.encode(phones),
-          headers: {
-            "Authorization": "Bearer ${token.value}",
-            "Content-Type": "application/json"
-          });
-
-      if (response.statusCode == 200) {
-        final data = StoryResponseFromJson(response.body);
-        usersStory.value = data.users!;
-        update();
-      } else {
-        print(jsonDecode(response.body)["msg"]);
-      }
+      try {
+  final response = await http.post(Uri.parse(storyurls),
+      body: json.encode(phones),
+      headers: {
+        "Authorization": "Bearer ${token.value}",
+        "Content-Type": "application/json"
+      });
+  
+  if (response.statusCode == 200) {
+    print(jsonDecode(response.body));
+    final data = StoryResponseFromJson(response.body);
+    usersStory.value = data.users!;
+    update();
+  } else {
+    print(jsonDecode(response.body)["msg"]);
+  }
+} catch (e) {
+  print(e.toString());
+  }
    
   }
 

@@ -1,12 +1,14 @@
 import 'dart:convert';
 
 
+import 'package:chat_app/Models/StoryModel.dart';
 import 'package:chat_app/Services/storyresponse/user_story_model.dart';
 
 class StoryResponse{
 
  UserStoryModel? currentuser; 
 List<UserStoryModel>? users;
+
 
  
 //parsing all users stories
@@ -16,6 +18,9 @@ List<UserStoryModel>? users;
 //parsing current user stories
 StoryResponse.fromJsonCurrent(Map<String,dynamic>json):
   currentuser=UserStoryModel.fromJson(json);
+
+
+
 }
 
 
