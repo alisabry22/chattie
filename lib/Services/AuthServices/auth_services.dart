@@ -2,23 +2,25 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:chat_app/AuthScreen.dart';
-import 'package:chat_app/Constants/Constants.dart';
-import 'package:chat_app/Models/User.dart';
-import 'package:chat_app/Services/AuthServices/LoginRespone.dart';
+import 'package:chat_app/Constants/constants.dart';
+import 'package:chat_app/Models/user.dart';
+import 'package:chat_app/Services/AuthServices/login_response.dart';
+import 'package:chat_app/auth_screen.dart';
+import 'package:chat_app/home_screen.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:socket_io_client/socket_io_client.dart' as IO;
 
-import '../../HomeScreen.dart';
 
 class AuthServices extends GetxController {
  
   
    RxList<Contact> contacts=RxList.empty();
     RxBool islogin=true.obs;
+    RxBool obscurevalue=false.obs;
+
+
   @override
   void onInit() async {
     
@@ -30,7 +32,7 @@ class AuthServices extends GetxController {
   
     if (token != null && token.isNotEmpty && id!=null) {
       Get.offAll(()=>const HomeScreen());
-        final msg=await RenewToken();
+        final msg=await renewToken();
 
       
 
@@ -56,7 +58,6 @@ await FlutterContacts.requestPermission();
 
   Future signUpFunction(String username, String password, String email,String phone, String countrycode) async {
     String signupurl = "${await Constants().detectDevice()}/user/adduser";
-    print(signupurl);
     final usermodel = User(
         username: username,
         email: email,
@@ -71,7 +72,6 @@ await FlutterContacts.requestPermission();
         body: json.encode(usermodel.userToJson()));
     if (response.statusCode == 200) {
       final data = loginResponseFromJson(response.body);
-    print(" data . usr .id ${data.user.id}");
       saveTokenLocally(data.token);
       saveIDLoggedInUser(data.user.id);
 
@@ -81,7 +81,7 @@ await FlutterContacts.requestPermission();
       return [false,jsonDecode(response.body)["msg"]];
     }
   }
-  Future RenewToken()async{
+  Future renewToken()async{
 String renewurl="${await Constants().detectDevice()}/user/renewtoken";
 SharedPreferences sharedprefs=await SharedPreferences.getInstance();
 String? token=sharedprefs.getString("token");
@@ -147,19 +147,23 @@ else
     SharedPreferences sharedprefs=await SharedPreferences.getInstance();
     String? token=sharedprefs.getString("token");
     final request={"phone":phone};
-    final response =await http.post(Uri.parse(loginUrl),
-        body:jsonEncode(request), headers: {
-          "Content-Type": "application/json",
-          'Authorization': 'Bearer $token'
-        });
-
-        if(response.statusCode==200){
-          User data=User.fromJson(jsonDecode(response.body)["user"]);
-          return data;
-        }
-        else{
-          return jsonDecode(response.body)["msg"];
-        }
+    try {
+  final response =await http.post(Uri.parse(loginUrl),
+      body:jsonEncode(request), headers: {
+        "Content-Type": "application/json",
+        'Authorization': 'Bearer $token'
+      });
+  
+      if(response.statusCode==200){
+        User data=User.fromJson(jsonDecode(response.body)["user"]);
+        return data;
+      }
+      else{
+        return jsonDecode(response.body)["msg"];
+      }
+} catch (e) {
+print(e.toString());
+  }
   }
  Future saveIDLoggedInUser(String id)async{
      SharedPreferences sharedprefs=await SharedPreferences.getInstance();

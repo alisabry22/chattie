@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 
-import 'package:chat_app/Models/StoryModel.dart';
 import 'package:chat_app/Services/storyresponse/user_story_model.dart';
 
 class StoryResponse{

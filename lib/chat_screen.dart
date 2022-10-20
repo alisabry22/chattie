@@ -1,17 +1,16 @@
 
 
-import 'package:chat_app/Services/MessageServices/MessageServices.dart';
-import 'package:chat_app/socketServices/socketservices.dart';
+import 'package:chat_app/Services/MessageServices/message_services.dart';
+import 'package:chat_app/socketServices/socket_services.dart';
 import 'package:chat_bubbles/bubbles/bubble_special_three.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:socket_io_client/socket_io_client.dart';
 
 class ChatScreen extends GetView<MessageServices>{
+  const ChatScreen({super.key});
 
 
-
- 
   @override
   Widget build(BuildContext context) {
    

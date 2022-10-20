@@ -1,19 +1,19 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'package:chat_app/Constants/Constants.dart';
+import 'package:chat_app/Constants/constants.dart';
 import 'package:chat_app/Models/ObjectBox/UserBox.dart';
-import 'package:chat_app/Services/PhoneServices/PhoneResponse.dart';
+import 'package:chat_app/Services/PhoneServices/phone_response.dart';
 import 'package:chat_app/objectbox.g.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../Models/User.dart';
+import '../../Models/user.dart';
 import '../../main.dart';
 
-class phoneController extends GetxController{
+class PhoneController extends GetxController{
 
    RxList<String> phones=RxList.empty();
     RxList<Contact> contacts =RxList.empty();
@@ -85,11 +85,11 @@ on SocketException catch(e){
       List<Contact> democontact = await FlutterContacts.getContacts(withProperties: true);
 
 if(democontact.isNotEmpty){
- democontact.forEach((element) {
-element.phones.forEach((phone) {
+ for (var element in democontact) {
+for (var phone in element.phones) {
   phones.add(phone.number.replaceAll(" ", "").toString());
-});
- });
+}
+ }
  
  
 

@@ -1,6 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:chat_app/Services/StoryServices/StoryServices.dart';
-import 'package:chat_app/StoriesView.dart';
+import 'package:chat_app/Services/StoryServices/story_services.dart';
+import 'package:chat_app/stories_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -36,7 +36,7 @@ class MyStatus extends GetView<StoryServices> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Container(
+                      SizedBox(
                         width: MediaQuery.of(context).size.width * 0.8,
                         child: Row(
                           children: [
@@ -73,8 +73,8 @@ class MyStatus extends GetView<StoryServices> {
                         ),
                       ),
                       PopupMenuButton(
-                        offset: Offset(0, 50),
-                        icon: Icon(
+                        offset:const Offset(0, 50),
+                        icon:const Icon(
                           Icons.more_vert,
                           color: Colors.white,
                         ),
@@ -94,9 +94,9 @@ class MyStatus extends GetView<StoryServices> {
                                  
                                
                             Get.defaultDialog(
-                              content: Text("Delete 1 Story "),
-                              cancel: Text("CANCEL"),
-                              confirm: Text("CONFIRM"),
+                              content: const Text("Delete 1 Story "),
+                              cancel: const Text("CANCEL"),
+                              confirm: const Text("CONFIRM"),
                               
                             );
                                 

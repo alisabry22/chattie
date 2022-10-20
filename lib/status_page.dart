@@ -1,7 +1,6 @@
-import 'package:chat_app/Services/StoryServices/StoryServices.dart';
-import 'package:chat_app/Services/storyresponse/user_story_model.dart';
-import 'package:chat_app/StoriesView.dart';
-import 'package:chat_app/myStatus.dart';
+import 'package:chat_app/Services/StoryServices/story_services.dart';
+import 'package:chat_app/stories_view.dart';
+import 'package:chat_app/my_status.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
@@ -12,6 +11,8 @@ class StatusPage extends GetView<StoryServices> {
   final ImagePicker imagePicker = ImagePicker();
   String? currentuser;
   List<String> phones = [];
+
+  StatusPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -24,11 +25,11 @@ class StatusPage extends GetView<StoryServices> {
                     onPressed: () {},
                     child:const Icon(FontAwesomeIcons.pen),
                   ),
-                  SizedBox(height: 5,),
+                 const SizedBox(height: 5,),
                     FloatingActionButton(
                     heroTag: "camera",
                     onPressed: ()async {
-                          final userstory = await controller
+                           await controller
                                 .uploadPhotoToServer( controller.currentuser.value);
                     },
                     child:const Icon(Icons.camera_alt),
@@ -62,7 +63,7 @@ class StatusPage extends GetView<StoryServices> {
                             },
                             child: Row(
                               children: [
-                                Container(
+                                SizedBox(
                                   width: MediaQuery.of(context).size.width * 0.8,
                                   child: Row(children: [
                                     StatusView(
@@ -133,7 +134,7 @@ class StatusPage extends GetView<StoryServices> {
                                     ],
                                   ),
                                 ),
-                                SizedBox(
+                              const  SizedBox(
                                   width: 10,
                                 ),
                                 Padding(
@@ -201,7 +202,7 @@ class StatusPage extends GetView<StoryServices> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          "${controller.usersStory[index].username}",
+                                          controller.usersStory[index].username,
                                           style: const TextStyle(
                                               color: Colors.white,
                                               fontWeight: FontWeight.w500),

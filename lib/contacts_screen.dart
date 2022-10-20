@@ -1,16 +1,18 @@
-import 'package:chat_app/ChatScreen.dart';
-import 'package:chat_app/Models/User.dart';
-import 'package:chat_app/Services/AuthServices/AuthServices.dart';
-import 'package:chat_app/Services/ChatServices/chatServices.dart';
-import 'package:chat_app/Services/PhoneServices/phoneController.dart';
+import 'package:chat_app/Models/user.dart';
+import 'package:chat_app/Services/AuthServices/auth_services.dart';
+import 'package:chat_app/Services/ChatServices/chat_services.dart';
+import 'package:chat_app/Services/PhoneServices/phone_controller.dart';
+import 'package:chat_app/chat_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:get/get.dart';
 
-class ContactsScreen extends GetView<phoneController> {
+class ContactsScreen extends GetView<PhoneController> {
  
 
   bool phonefound = false;
+
+  ContactsScreen({super.key});
   
 
 
@@ -19,7 +21,7 @@ class ContactsScreen extends GetView<phoneController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: GetX<phoneController>(
+        leading: GetX<PhoneController>(
           builder: (controller) {
             return controller.issearching.value?BackButton(
                   onPressed: () {
@@ -35,7 +37,7 @@ class ContactsScreen extends GetView<phoneController> {
              
         ),
         backgroundColor:const Color(0xff0F3460),
-        title: GetX<phoneController>(
+        title: GetX<PhoneController>(
           builder: (controller){
             return controller.issearching.value?TextField(
                   onChanged: ((query) => controller.runfilter( query)),
@@ -73,7 +75,7 @@ class ContactsScreen extends GetView<phoneController> {
               ]),
         ),
         child:  
-               GetX<phoneController>(
+               GetX<PhoneController>(
                 builder: (controller) {
                   return  AnimationLimiter(
                   
@@ -113,7 +115,7 @@ class ContactsScreen extends GetView<phoneController> {
                                 if(chatId[0]==true){
                                    User recieverData=data ;
                                 
-                                  Get.to(() => ChatScreen(), arguments: [recieverData,chatId[1]]);
+                                  Get.to(() => const ChatScreen(), arguments: [recieverData,chatId[1]]);
                                 }
                                 
                                   

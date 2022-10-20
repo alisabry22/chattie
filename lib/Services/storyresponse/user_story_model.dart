@@ -1,4 +1,4 @@
-import 'package:chat_app/Models/StoryModel.dart';
+import 'package:chat_app/Models/story_model.dart';
 
 class UserStoryModel {
   String userId, username,email, phone, countrycode;

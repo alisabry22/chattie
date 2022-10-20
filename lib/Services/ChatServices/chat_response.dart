@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:chat_app/Models/ChatModel.dart';
+import 'package:chat_app/Models/chat_model.dart';
 
 class ChatResponse{
 late List<ChatModel> chats;

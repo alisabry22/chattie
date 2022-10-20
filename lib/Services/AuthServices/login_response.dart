@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:chat_app/Models/User.dart';
+import 'package:chat_app/Models/user.dart';
 
 class LoginResponse{
 

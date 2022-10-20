@@ -1,15 +1,13 @@
 import 'dart:convert';
 
-import 'package:chat_app/Constants/Constants.dart';
-import 'package:chat_app/Models/StoryModel.dart';
-import 'package:chat_app/Services/AuthServices/AuthServices.dart';
-import 'package:chat_app/Services/PhoneServices/phoneController.dart';
-import 'package:chat_app/Services/storyresponse/storyResponse.dart';
+import 'package:chat_app/Constants/constants.dart';
+import 'package:chat_app/Models/story_model.dart';
+import 'package:chat_app/Services/PhoneServices/phone_controller.dart';
+import 'package:chat_app/Services/storyresponse/story_response.dart';
 import 'package:chat_app/Services/storyresponse/user_story_model.dart';
 import 'package:chat_app/main.dart';
 import 'package:chat_app/objectbox.g.dart';
 import 'package:cloudinary_public/cloudinary_public.dart';
-import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
@@ -17,8 +15,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:socket_io_client/socket_io_client.dart';
 
 import '../../Models/ObjectBox/UserBox.dart';
-import '../../Models/User.dart';
-import '../../socketServices/socketservices.dart';
+import '../../Models/user.dart';
+import '../../socketServices/socket_services.dart';
 
 class StoryServices extends GetxController {
   RxList<StoryModel> myStoryLinks = RxList.empty();
@@ -58,7 +56,7 @@ class StoryServices extends GetxController {
   }
 
   void storySocketService() {
-   searchedusers.value= Get.find<phoneController>().searchedphones;
+   searchedusers.value= Get.find<PhoneController>().searchedphones;
    searchedusers.refresh();
    
     Socket socket = Get.find<SocketServices>().socket;
@@ -66,17 +64,10 @@ class StoryServices extends GetxController {
     socket.on("insertedStory", (data)async {
 
      
-      print(data as Map<String, dynamic>);
       StoryModel storyModel = StoryModel.fromJsonAddedStory(data as Map<String, dynamic>);
             List<StoryModel> stories=[];
              stories.add(storyModel);
-      UserStoryModel userStoryModel = UserStoryModel(
-          userId: storyModel.user.id,
-          username: storyModel.user.username,
-          email: storyModel.user.email,
-          phone: storyModel.user.phone,
-          countrycode: storyModel.user.countrycode,
-          stories: stories);
+   
             
    
   if(storyModel.user.id==currentuser.value){
@@ -84,51 +75,13 @@ class StoryServices extends GetxController {
     myStoryLinks.refresh();
   }else{
     getOthersStory();
-// if(usersStory.isNotEmpty){
 
-//   //   searchedusers.forEach((element) {
-//   //     int index=0;
-    
-//   //  index=usersStory.indexWhere((singleuser) => singleuser.userId==element.id);
-//   //  print(index);
-//   //  if(index!=-1){
-
-//   //   usersStory[index].stories.add(storyModel);
-//   //   usersStory.refresh();
-//   //  }else{
-
-//   //   usersStory.add(userStoryModel);
-//   //   usersStory.refresh();
-//   //  }
-//   //   });
-       
-//   }
     
   }
   
 
 
-// Query query=objectBox.userBox.query().build();
-// UserBox user=query.findFirst();
 
-
-    // if(usersStory.isNotEmpty){
-    //   print("user story not empty");
-    //   user.phones.forEach((element) {
-    //  int index=usersStory.indexWhere((element) => element.phone==storyModel.user.phone);
-    //  print("index of user is $index");
-    //   if(index!=-1){
-    //     usersStory[index].stories.add(storyModel);
-    //     usersStory.refresh();
-    //   }else{
-    //     usersStory.add(userStoryModel);
-    //        usersStory.refresh();
-    //   }
-    //   });
-    // }else{
-    //   usersStory.add(userStoryModel);
-    //   usersStory.refresh();
-    // }
   });
 
 
@@ -226,7 +179,6 @@ class StoryServices extends GetxController {
       });
   
   if (response.statusCode == 200) {
-    print(jsonDecode(response.body));
     final data = StoryResponseFromJson(response.body);
     usersStory.value = data.users!;
     update();

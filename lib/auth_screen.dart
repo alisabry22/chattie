@@ -1,12 +1,11 @@
 import 'package:animations/animations.dart';
-import 'package:chat_app/LoginScreen.dart';
-import 'package:chat_app/SignupScreen.dart';
+import 'package:chat_app/Services/AuthServices/auth_services.dart';
+import 'package:chat_app/login_screen.dart';
+import 'package:chat_app/signup_screen.dart';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:get/get.dart';
 
-import 'Services/AuthServices/AuthServices.dart';
 
 class AuthScreen extends GetView<AuthServices>{
 
@@ -15,6 +14,8 @@ class AuthScreen extends GetView<AuthServices>{
  final loginkey=GlobalKey<FormState>();
   final Registerkey=GlobalKey<FormState>();
 
+  AuthScreen({super.key});
+
 
 
 
@@ -22,7 +23,7 @@ class AuthScreen extends GetView<AuthServices>{
   Widget build(BuildContext context) {
     return Scaffold(
       
-    
+    backgroundColor: Colors.transparent,
       appBar: AppBar(title: const Text("Login Screen"),backgroundColor:const Color(0xff16213E) ,elevation: 0,),
       body: Container(
         height: MediaQuery.of(context).size.height,
@@ -68,17 +69,19 @@ class AuthScreen extends GetView<AuthServices>{
                 ),
               ]),
               PageTransitionSwitcher(
-                  duration: Duration(milliseconds: 500),
+                  duration:const Duration(milliseconds: 500),
                   reverse: !controller.islogin.value,
                   transitionBuilder: (child, animation, secondaryAnimation) {
                     return SharedAxisTransition(
                       animation: animation,
                       secondaryAnimation: secondaryAnimation,
                       transitionType: SharedAxisTransitionType.horizontal,
+                      
+                      fillColor: Colors.transparent,
                       child: child,
                     );
                   },
-                  child: controller.islogin.value ? const LoginScreen() : const SignUpScreen()),
+                  child: controller.islogin.value?LoginScreen():const SignUpScreen()),
             ]),
           );
           },

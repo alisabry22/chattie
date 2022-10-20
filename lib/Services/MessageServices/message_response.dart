@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:chat_app/Models/MessageModel.dart';
+import 'package:chat_app/Models/message_model.dart';
 
 class MessageResponse{
 

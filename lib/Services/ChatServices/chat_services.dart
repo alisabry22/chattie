@@ -1,16 +1,15 @@
 import 'dart:convert';
 
-import 'package:chat_app/Constants/Constants.dart';
-import 'package:chat_app/Models/MessageModel.dart';
-import 'package:chat_app/Services/AuthServices/AuthServices.dart';
-import 'package:chat_app/Services/ChatServices/chatresponse.dart';
-import 'package:chat_app/socketServices/socketservices.dart';
+import 'package:chat_app/Constants/constants.dart';
+import 'package:chat_app/Models/message_model.dart';
+import 'package:chat_app/Services/ChatServices/chat_response.dart';
+import 'package:chat_app/socketServices/socket_services.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:socket_io_client/socket_io_client.dart';
 
-import '../../Models/ChatModel.dart';
+import '../../Models/chat_model.dart';
 
 class ChatServices extends GetxController{
 

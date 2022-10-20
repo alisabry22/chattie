@@ -1,10 +1,8 @@
 
 import 'dart:convert';
-import 'dart:developer';
-import 'package:chat_app/Constants/Constants.dart';
-import 'package:chat_app/Models/User.dart';
-import 'package:chat_app/loginResponse.dart';
-import 'package:chat_app/usermodels/UserModel.dart';
+import 'package:chat_app/Constants/constants.dart';
+import 'package:chat_app/Models/user.dart';
+import 'package:chat_app/login_response.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -23,7 +21,7 @@ final response=await http.post(Uri.parse(signupUrl),body:json.encode(user.userTo
 });
 
 if(response.statusCode==200){
- final data=loginResponse.fromJson(response.body);
+ final data=LoginResponse.fromJson(response.body);
 
   await saveToken(data.token);
   return true;

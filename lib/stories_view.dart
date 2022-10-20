@@ -1,5 +1,4 @@
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:chat_app/Models/StoryModel.dart';
+import 'package:chat_app/Models/story_model.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
@@ -21,10 +20,10 @@ class _StoriesViewState extends State<StoriesView> {
   void initState() {
     print(stories);
     super.initState();
-    stories.forEach((element) {
+    for (var element in stories) {
       storyItems.add(
           StoryItem.pageImage(url: element.photo, controller: storyController));
-    });
+    }
   }
 
   @override

@@ -1,18 +1,13 @@
-import 'package:chat_app/ChatScreen.dart';
-import 'package:chat_app/ContactsScreen.dart';
-import 'package:chat_app/Models/User.dart';
-import 'package:chat_app/Services/ChatServices/chatServices.dart';
+import 'package:chat_app/chat_screen.dart';
+import 'package:chat_app/contacts_screen.dart';
+import 'package:chat_app/Models/user.dart';
+import 'package:chat_app/Services/ChatServices/chat_services.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 
 class ChatRooms extends GetView<ChatServices> {
-
-
-
-
- 
-
+  const ChatRooms({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +46,7 @@ class ChatRooms extends GetView<ChatServices> {
                       return InkWell(
                         onTap: (){
                   
-                          Get.to(()=>ChatScreen(),arguments: [recieverData,controller.chats[index].id]);
+                          Get.to(()=>const ChatScreen(),arguments: [recieverData,controller.chats[index].id]);
                           
            
                         },

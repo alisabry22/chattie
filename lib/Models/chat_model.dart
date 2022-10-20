@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import 'package:chat_app/Models/MessageModel.dart';
-import 'package:chat_app/Models/User.dart';
+import 'package:chat_app/Models/message_model.dart';
+import 'package:chat_app/Models/user.dart';
 
 class ChatModel {
   late String id, chatName;
@@ -21,7 +21,7 @@ class ChatModel {
     final chatName = json["chatName"] as String; 
     final isgroupChat = json["isgroupChat"] as bool;
      final usersdata = json["users"] as List<dynamic>;
-     final users = usersdata!=null?  usersdata.map<User>((e) => User.fromJson(e)).toList():<User>[];
+     final users = usersdata.isNotEmpty? usersdata.map<User>((e) => User.fromJson(e)).toList():<User>[];
      final messagemodel=json["latestMessage"]!=null?MessageModel.fromJson(json["latestMessage"]):null  ;
      
     return ChatModel(

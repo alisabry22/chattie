@@ -1,14 +1,14 @@
 import 'dart:convert';
 
-import 'package:chat_app/usermodels/UserModel.dart';
+import 'package:chat_app/usermodels/user_model.dart';
 
-class loginResponse {
+class LoginResponse {
 
   late String msg;
    late UserModel userModel;
   late String token;
   
-  loginResponse({
+  LoginResponse({
   required  this.msg,
   required this.userModel,
   required this.token,
@@ -27,8 +27,8 @@ class loginResponse {
     };
   }
 
-  factory loginResponse.fromMap(Map<String, dynamic> map) {
-    return loginResponse(
+  factory LoginResponse.fromMap(Map<String, dynamic> map) {
+    return LoginResponse(
       msg:  map["msg"],
       userModel:  UserModel.fromJson(map["user"]),
       token:  map["token"],
@@ -37,5 +37,5 @@ class loginResponse {
 
    toJson() => json.encode(toMap());
 
-  factory loginResponse.fromJson(String source) => loginResponse.fromMap(json.decode(source));
+  factory LoginResponse.fromJson(String source) => LoginResponse.fromMap(json.decode(source));
 }
