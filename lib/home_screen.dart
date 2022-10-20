@@ -1,4 +1,4 @@
-import 'package:chat_app/CallsPage.dart';
+import 'package:chat_app/calls_page.dart';
 import 'package:chat_app/auth_screen.dart';
 import 'package:chat_app/chat_rooms.dart';
 import 'package:chat_app/main.dart';
