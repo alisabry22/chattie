@@ -1,7 +1,7 @@
 
 
 
-import 'package:chat_app/Models/User.dart';
+import 'package:chat_app/Models/user.dart';
 
 class StoryModel{
 

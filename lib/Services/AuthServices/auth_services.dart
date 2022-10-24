@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:chat_app/Constants/constants.dart';
-import 'package:chat_app/Models/User.dart';
+import 'package:chat_app/Models/user.dart';
 import 'package:chat_app/Services/AuthServices/login_response.dart';
 import 'package:chat_app/auth_screen.dart';
 import 'package:chat_app/home_screen.dart';
@@ -213,4 +213,22 @@ print(e.toString());
       print(e.toString());
     }
   }
+
+  // Future updateProfile(String profilephoto)async{
+  //   String updateProfileUrl="${Constants().detectDevice()}/user/editprofile";
+  //   SharedPreferences sharedprefs=await SharedPreferences.getInstance();
+  //   String? token=sharedprefs.getString("token");
+
+
+  //   final response=await http.post(Uri.parse(updateProfileUrl),body: ,headers:
+  //   {"Content-Type": "application/json",
+  //       'Authorization': 'Bearer $token'});
+
+  //   if(response.statusCode==200){
+
+  //   }else{
+
+  //     print(jsonDecode(response.body));
+  //   }
+  // }
 }

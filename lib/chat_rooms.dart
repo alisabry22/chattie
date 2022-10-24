@@ -1,6 +1,6 @@
+import 'package:chat_app/Models/user.dart';
 import 'package:chat_app/chat_screen.dart';
 import 'package:chat_app/contacts_screen.dart';
-import 'package:chat_app/Models/user.dart';
 import 'package:chat_app/Services/ChatServices/chat_services.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -40,6 +40,7 @@ class ChatRooms extends GetView<ChatServices> {
                     itemBuilder: ((context, index) {
                       User recieverData;
                       
+                      
                       recieverData = controller.chats[index]
                           .users
                           .firstWhere((element) => element.id != controller.currentUserID.value);
@@ -51,7 +52,7 @@ class ChatRooms extends GetView<ChatServices> {
            
                         },
                         child:controller.chats[index].messageModel!=null? ListTile(
-                          leading:const CircleAvatar(
+                          leading:recieverData.profilephoto.isNotEmpty?Image.network(recieverData.profilephoto) :const CircleAvatar(
                             backgroundImage: AssetImage("assets/images/avatar.png"),
                             radius: 25,
                           ),

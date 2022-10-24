@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:chat_app/Constants/constants.dart';
-import 'package:chat_app/Models/User.dart';
+import 'package:chat_app/Models/user.dart';
 import 'package:chat_app/Models/message_model.dart';
 import 'package:chat_app/Services/MessageServices/message_response.dart';
 import 'package:chat_app/socketServices/socket_services.dart';
