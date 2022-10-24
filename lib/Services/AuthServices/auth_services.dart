@@ -3,13 +3,15 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:chat_app/Constants/constants.dart';
-import 'package:chat_app/Models/user.dart';
+import 'package:chat_app/Models/User.dart';
 import 'package:chat_app/Services/AuthServices/login_response.dart';
 import 'package:chat_app/auth_screen.dart';
 import 'package:chat_app/home_screen.dart';
+import 'package:cloudinary_public/cloudinary_public.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 
@@ -56,7 +58,7 @@ await FlutterContacts.requestPermission();
 }
 
 
-  Future signUpFunction(String username, String password, String email,String phone, String countrycode) async {
+  Future signUpFunction(String username, String password, String email,String phone, String countrycode,String profilephoto) async {
     String signupurl = "${await Constants().detectDevice()}/user/adduser";
     final usermodel = User(
         username: username,
@@ -64,7 +66,7 @@ await FlutterContacts.requestPermission();
         password: password,
         phone: phone,
         countrycode: countrycode,
-
+        profilephoto: profilephoto
       );
 
     final response = await http.post(Uri.parse(signupurl),
@@ -184,5 +186,31 @@ print(e.toString());
     SharedPreferences sharedprefs=await SharedPreferences.getInstance();
   
     return   sharedprefs.getString("ID");
+  }
+
+  Future pickImage()async{
+
+    XFile? file=await ImagePicker().pickImage(source: ImageSource.gallery);
+    if(file!=null){
+      return file;
+    }
+    else 
+    {
+      return null;
+    }
+  }
+
+  Future uploadStoryToCloud(XFile file, String id) async {
+    final cloudinary = CloudinaryPublic("dibhdgsri", "jsfjqynz");
+    try {
+      CloudinaryResponse response = await cloudinary.uploadFile(
+        CloudinaryFile.fromFile(file.path,
+            resourceType: CloudinaryResourceType.Image, folder: "$id/profile"),
+      );
+
+      return response.secureUrl;
+    } catch (e) {
+      print(e.toString());
+    }
   }
 }

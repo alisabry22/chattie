@@ -14,7 +14,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:socket_io_client/socket_io_client.dart';
 
-import '../../Models/ObjectBox/UserBox.dart';
+import '../../Models/ObjectBox/user_box.dart';
 import '../../Models/user.dart';
 import '../../socketServices/socket_services.dart';
 
@@ -46,7 +46,7 @@ class StoryServices extends GetxController {
     try {
       CloudinaryResponse response = await cloudinary.uploadFile(
         CloudinaryFile.fromFile(file.path,
-            resourceType: CloudinaryResourceType.Image, folder: id),
+            resourceType: CloudinaryResourceType.Image, folder: "$id/stories"),
       );
 
       return response.secureUrl;

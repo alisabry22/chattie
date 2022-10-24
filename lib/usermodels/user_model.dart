@@ -3,6 +3,7 @@ import 'dart:convert';
 class UserModel {
 
   late String email,username,password,phone,id;
+  
   UserModel({
     required this.email,
     required this.username,

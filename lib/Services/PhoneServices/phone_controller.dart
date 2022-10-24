@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:chat_app/Constants/constants.dart';
-import 'package:chat_app/Models/ObjectBox/UserBox.dart';
+import 'package:chat_app/Models/ObjectBox/user_box.dart';
 import 'package:chat_app/Services/PhoneServices/phone_response.dart';
 import 'package:chat_app/objectbox.g.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';

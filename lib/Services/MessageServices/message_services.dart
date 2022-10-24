@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:chat_app/Constants/constants.dart';
+import 'package:chat_app/Models/User.dart';
 import 'package:chat_app/Models/message_model.dart';
 import 'package:chat_app/Services/MessageServices/message_response.dart';
 import 'package:chat_app/socketServices/socket_services.dart';
@@ -10,7 +11,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:socket_io_client/socket_io_client.dart';
 
-import '../../Models/user.dart';
+
 class MessageServices extends GetxController{
 
 
@@ -18,7 +19,7 @@ class MessageServices extends GetxController{
   RxList<MessageModel> messages = RxList.empty();
   RxString currentuser="".obs;
   RxString chatId="".obs;
-  Rx<User> user=User(username: "", email: "", phone: "", countrycode: "").obs;
+  Rx<User> user=User(username: "", email: "", phone: "", countrycode: "",profilephoto: "").obs;
   RxBool issender=false.obs;
     final scrollController = ScrollController();
 

@@ -1,6 +1,6 @@
+import 'package:chat_app/Models/ObjectBox/user_box.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
-import 'package:chat_app/Models/ObjectBox/UserBox.dart';
 import 'package:chat_app/objectbox.g.dart';
 
 class ObjectBox{

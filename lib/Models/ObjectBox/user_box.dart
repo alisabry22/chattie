@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:objectbox/objectbox.dart';
 
 @Entity()
@@ -7,6 +8,8 @@ class UserBox{
 int id;
 String username,email,phone,countrycode,userID;
 List<String>phones;
+@Property(type: PropertyType.byteVector)
+Uint8List personalphoto;
 
 UserBox({
   this.id=0,
@@ -16,6 +19,7 @@ UserBox({
   required this.countrycode,
   required this.phones,
   required this.userID,
+  required this.personalphoto,
    
 });
 

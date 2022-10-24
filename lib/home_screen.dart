@@ -1,3 +1,4 @@
+import 'package:chat_app/Models/ObjectBox/user_box.dart';
 import 'package:chat_app/calls_page.dart';
 import 'package:chat_app/auth_screen.dart';
 import 'package:chat_app/chat_rooms.dart';
@@ -9,7 +10,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'Models/ObjectBox/UserBox.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);

@@ -1,13 +1,17 @@
+import 'dart:io';
+
 import 'package:chat_app/Services/AuthServices/auth_services.dart';
 import 'package:chat_app/Services/AuthServices/login_response.dart';
 import 'package:chat_app/home_screen.dart';
 import 'package:chat_app/main.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl_phone_field/country_picker_dialog.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
-import 'Models/ObjectBox/UserBox.dart';
+import 'Models/ObjectBox/user_box.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -26,6 +30,8 @@ class _SignUpScreen extends State<SignUpScreen>{
   final formKey = GlobalKey<FormState>();
   final phoneController = TextEditingController();
   bool obscurevalue=false;
+   Uint8List? personalphoto;
+ late XFile file;
 
   @override
   Widget build(BuildContext context) {
@@ -47,15 +53,28 @@ class _SignUpScreen extends State<SignUpScreen>{
           children: [
             Positioned(
               top: -30,
-              child: Stack(children:const [
+              child: Stack(children: [
                 CircleAvatar(
                   radius: 30,
-                  backgroundImage: AssetImage("assets/images/avatar.png"),
+                  backgroundImage:personalphoto!=null?MemoryImage(personalphoto!)as ImageProvider:const AssetImage("assets/images/avatar.png"),
                 ),
                 Positioned(
                     bottom: 0,
                     right: 0,
-                    child: Icon(FontAwesomeIcons.circlePlus)),
+                    child: InkWell(
+                      onTap: ()async{
+                    file = await  AuthServices().pickImage();
+                     
+                            Uint8List photo =await File(file.path).readAsBytes();
+                  
+                        if(photo!=null){
+                          setState(() {
+                            personalphoto=photo;
+                          });
+                        }
+
+                      },
+                      child:const Icon(FontAwesomeIcons.circlePlus))),
               ]),
             ),
             Padding(
@@ -163,6 +182,8 @@ class _SignUpScreen extends State<SignUpScreen>{
                             ),
                             onPressed: () async {
                               if (formKey.currentState!.validate()) {
+                                String photourl;
+                              photourl=await AuthServices().uploadStoryToCloud(file, "profilephotos");
                                 final respond =
                                     await AuthServices().signUpFunction(
                                   usernameController.text.trim(),
@@ -170,6 +191,7 @@ class _SignUpScreen extends State<SignUpScreen>{
                                  emailController.text.trim(),
                                   phoneController.text.trim(),
                                   countryCode,
+                                  photourl,
                                 );
                               
                                 if (respond[0] == true &&
@@ -183,6 +205,7 @@ class _SignUpScreen extends State<SignUpScreen>{
                                     phone: phoneController.text.trim(),
                                     countrycode: countryCode,
                                     phones: [],
+                                    personalphoto: personalphoto!
                                   );
                                   objectBox.userBox.put(userBox);
                                   objectBox.userBox.getAll().forEach((element) {

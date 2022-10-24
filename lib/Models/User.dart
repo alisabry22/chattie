@@ -7,7 +7,7 @@ class User {
   late String password;
   late String phone;
   late String countrycode;
-
+  late String profilephoto;
   User({
     this.id="",
     required this.username,
@@ -15,6 +15,7 @@ class User {
      this.password="",
     required this.phone,
     required this.countrycode,
+    required this.profilephoto,
   });
   factory User.fromJson(Map<String, dynamic> json) {
     final id=json["_id"];
@@ -22,6 +23,7 @@ class User {
     final email = json["email"];
    final phone = json["phone"];
    final countrycode = json["countrycode"];
+   final profilephoto=json["profilephoto"];
 
     return User(
       id: id,
@@ -29,6 +31,7 @@ class User {
         email: email,
         phone: phone,
         countrycode: countrycode,
+        profilephoto: profilephoto
     );
   }
 
@@ -38,5 +41,6 @@ class User {
         "email": email,
         "phone": phone,
         "countrycode": countrycode,
+        "profilephoto":profilephoto,
       };
 }
