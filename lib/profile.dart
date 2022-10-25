@@ -1,5 +1,6 @@
 import 'package:chat_app/Models/ObjectBox/user_box.dart';
 import 'package:chat_app/Services/ProfileServices/profile_controller.dart';
+import 'package:chat_app/main.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -252,7 +253,7 @@ class _ProfileState extends State<Profile> {
                             ),
                             Text(
                               //replace with quote
-                              "Quote",
+                              objectBox.userBox.getAll().first.quote,
                               style: GoogleFonts.roboto(
                                   color: Colors.white,
                                   fontWeight: FontWeight.w500,
