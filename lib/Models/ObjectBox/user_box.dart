@@ -6,7 +6,7 @@ import 'package:objectbox/objectbox.dart';
 class UserBox{
 
 int id;
-String username,email,phone,countrycode,userID;
+String username,email,phone,countrycode,userID,quote;
 List<String>phones;
 @Property(type: PropertyType.byteVector)
 Uint8List personalphoto;
@@ -20,6 +20,7 @@ UserBox({
   required this.phones,
   required this.userID,
   required this.personalphoto,
+  required this.quote,
    
 });
 

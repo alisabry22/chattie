@@ -19,7 +19,7 @@ class MessageServices extends GetxController{
   RxList<MessageModel> messages = RxList.empty();
   RxString currentuser="".obs;
   RxString chatId="".obs;
-  Rx<User> user=User(username: "", email: "", phone: "", countrycode: "",profilephoto: "").obs;
+  Rx<User> user=User(username: "", email: "", phone: "", countrycode: "",profilephoto: "",quote: "").obs;
   RxBool issender=false.obs;
     final scrollController = ScrollController();
 

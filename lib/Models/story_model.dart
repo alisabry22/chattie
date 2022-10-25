@@ -19,7 +19,7 @@ StoryModel({
  factory StoryModel.fromJsonallusers(Map<String,dynamic>json){
  final id=json["_id"];
  final photo=json["storyLink"];
- return StoryModel(photo: photo, id: id, user: User(email: "",countrycode: "",phone: "",id: "",username: "",password: "",profilephoto: ""));
+ return StoryModel(photo: photo, id: id, user: User(email: "",countrycode: "",phone: "",id: "",username: "",password: "",profilephoto: "",quote: ""));
 
  }
 
@@ -27,7 +27,7 @@ StoryModel({
  factory StoryModel.fromJsonAddedStory(Map<String,dynamic>json){
   final id=json["_id"];
  final photo=json["storyLink"];
- final user=json["userId"]!=null ?User.fromJson(json["userId"]): User(username: "", email: "", phone: "", countrycode: "",profilephoto: "");
+ final user=json["userId"]!=null ?User.fromJson(json["userId"]): User(username: "", email: "", phone: "", countrycode: "",profilephoto: "",quote: "");
  return StoryModel(photo: photo, id: id, user: user);
  }
 

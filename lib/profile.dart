@@ -1,4 +1,5 @@
 import 'package:chat_app/Models/ObjectBox/user_box.dart';
+import 'package:chat_app/Services/ProfileServices/profile_controller.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -8,7 +9,7 @@ import 'package:image_picker/image_picker.dart';
 
 class Profile extends StatefulWidget {
   Profile({super.key});
-
+  late XFile photo;
   @override
   State<Profile> createState() => _ProfileState();
 }
@@ -49,15 +50,104 @@ class _ProfileState extends State<Profile> {
                     radius: 50,
                     backgroundImage: userBox.personalphoto.isNotEmpty
                         ? MemoryImage(userBox.personalphoto) as ImageProvider
-                        :const AssetImage("assets/images/avatar.png"),
+                        : const AssetImage("assets/images/avatar.png"),
                   ),
                   Positioned(
                       right: 3,
                       bottom: 0,
                       child: InkWell(
                         onTap: () async {
-                          photofile = await ImagePicker()
-                              .pickImage(source: ImageSource.gallery);
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                title: const Text("Profile Photo"),
+                                shape: const RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.only(
+                                        topLeft: Radius.circular(10),
+                                        topRight: Radius.circular(10))),
+                                alignment: Alignment.bottomCenter,
+                                insetPadding: EdgeInsets.zero,
+                                content: SizedBox(
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.1,
+                                  width: MediaQuery.of(context).size.width,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      const SizedBox(
+                                        height: 30,
+                                      ),
+                                      Column(
+                                        children: [
+                                          Container(
+                                              width: 45,
+                                              height: 45,
+                                              decoration: BoxDecoration(
+                                                  shape: BoxShape.circle,
+                                                  border: Border.all(
+                                                    color: Colors.grey,
+                                                  )),
+                                              child: const Icon(
+                                                  FontAwesomeIcons.camera)),
+                                          Text(
+                                            "Camera",
+                                            style: GoogleFonts.roboto(
+                                                fontSize: 14),
+                                          )
+                                        ],
+                                      ),
+                                      const SizedBox(
+                                        width: 50,
+                                      ),
+                                      InkWell(
+                                        onTap: () async {
+                                          String photourl;
+                                          var returnedvalue;
+                                          photofile = await ProfileController()
+                                              .pickImage();
+                                          photourl = await ProfileController()
+                                              .uploadStoryToCloud(
+                                                  photofile!, "profilephotos");
+                                          returnedvalue = ProfileController()
+                                              .updateProfilephoto(photourl);
+                                          if (returnedvalue == true) {
+                                            Get.snackbar("Done updating",
+                                                "changed profile photo successfully",
+                                                snackPosition:
+                                                    SnackPosition.BOTTOM,
+                                                duration:
+                                                    Duration(milliseconds: 3));
+                                          }
+                                        },
+                                        child: Column(
+                                          children: [
+                                            Container(
+                                                width: 45,
+                                                height: 45,
+                                                decoration: BoxDecoration(
+                                                  shape: BoxShape.circle,
+                                                  border: Border.all(
+                                                    color: Colors.grey,
+                                                  ),
+                                                ),
+                                                child: const Icon(
+                                                    FontAwesomeIcons
+                                                        .photoFilm)),
+                                            Text(
+                                              "Gallery",
+                                              style: GoogleFonts.roboto(
+                                                  fontSize: 14),
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
+                          );
                         },
                         child: const CircleAvatar(
                             radius: 20,
@@ -75,14 +165,13 @@ class _ProfileState extends State<Profile> {
               InkWell(
                 onTap: () {
                   Get.defaultDialog(
-               
                     title: "Enter your name",
                     content: Column(
                       children: [
                         TextField(
                           keyboardType: TextInputType.text,
                           decoration: InputDecoration(
-                          hintText: userBox.username,
+                            hintText: userBox.username,
                           ),
                         ),
                       ],

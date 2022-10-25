@@ -205,7 +205,8 @@ class _SignUpScreen extends State<SignUpScreen>{
                                     phone: phoneController.text.trim(),
                                     countrycode: countryCode,
                                     phones: [],
-                                    personalphoto: personalphoto!
+                                    personalphoto: personalphoto!,
+                                    quote: "Hello There Iam Using chattie"
                                   );
                                   objectBox.userBox.put(userBox);
                                   objectBox.userBox.getAll().forEach((element) {

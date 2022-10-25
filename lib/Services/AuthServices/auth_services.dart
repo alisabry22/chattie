@@ -66,7 +66,8 @@ await FlutterContacts.requestPermission();
         password: password,
         phone: phone,
         countrycode: countrycode,
-        profilephoto: profilephoto
+        profilephoto: profilephoto,
+        quote: ""
       );
 
     final response = await http.post(Uri.parse(signupurl),

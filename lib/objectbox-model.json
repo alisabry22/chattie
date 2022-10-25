@@ -5,7 +5,7 @@
   "entities": [
     {
       "id": "1:403030256000531545",
-      "lastPropertyId": "9:5605831644070567358",
+      "lastPropertyId": "10:3807760129101820548",
       "name": "UserBox",
       "properties": [
         {
@@ -48,6 +48,11 @@
           "id": "9:5605831644070567358",
           "name": "personalphoto",
           "type": 23
+        },
+        {
+          "id": "10:3807760129101820548",
+          "name": "quote",
+          "type": 9
         }
       ],
       "relations": []
