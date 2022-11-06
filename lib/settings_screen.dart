@@ -1,4 +1,5 @@
 import 'package:chat_app/Models/ObjectBox/user_box.dart';
+import 'package:chat_app/main.dart';
 import 'package:chat_app/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -90,10 +91,11 @@ class SettingScreen extends StatelessWidget {
                        Get.to(()=>Profile(),arguments: currentuser);
                   },
                   child: Row(
+                
                     children: [
-                      const CircleAvatar(
+                       CircleAvatar(
                         radius: 25,
-                        backgroundImage: AssetImage("assets/images/avatar.png"),
+                        backgroundImage:currentuser.personalphoto.isNotEmpty?MemoryImage(currentuser.personalphoto) as ImageProvider: AssetImage("assets/images/avatar.png"),
                       ),
                       Padding(
                         padding: const EdgeInsets.all(10.0),

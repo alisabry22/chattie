@@ -1,5 +1,5 @@
 import 'package:chat_app/Bindings/bindings.dart';
-import 'package:chat_app/BoxDatabase/ObjectBox.dart';
+import 'package:chat_app/BoxDatabase/object_box.dart';
 import 'package:chat_app/auth_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_navigation/get_navigation.dart';

@@ -1,8 +1,5 @@
-import 'package:chat_app/Models/user.dart';
-import 'package:chat_app/Services/AuthServices/auth_services.dart';
-import 'package:chat_app/Services/ChatServices/chat_services.dart';
+
 import 'package:chat_app/Services/PhoneServices/phone_controller.dart';
-import 'package:chat_app/chat_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -11,12 +8,12 @@ import 'package:google_fonts/google_fonts.dart';
 
 class ContactsScreen extends GetView<PhoneController> {
   bool phonefound = false;
-
   ContactsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xff002B5B),
       appBar: AppBar(
         leading: GetX<PhoneController>(
           builder: (controller) {
@@ -64,6 +61,16 @@ class ContactsScreen extends GetView<PhoneController> {
           },
         ),
         actions: [
+        controller.isloading.value? const Center(
+           child:  SizedBox(
+            width: 10,
+            height: 15,
+              child:CircularProgressIndicator(
+               strokeWidth: 3, 
+                color: Colors.white,
+              ) ,
+            ),
+         ):const SizedBox(),
           IconButton(
               onPressed: () {
                 controller.issearching.value = !controller.issearching.value;
@@ -72,140 +79,121 @@ class ContactsScreen extends GetView<PhoneController> {
           PopupMenuButton(
             itemBuilder: (context) {
               return [
-                PopupMenuItem(child: Text("Refresh")),
+                PopupMenuItem(
+                  child: const Text("Refresh"),
+                  onTap: () {
+                   controller.isloading.value=true;
+                    controller.requestContacts();
+                      controller.isloading.value=false;
+
+                  },
+                ),
               ];
             },
           ),
         ],
       ),
-      body: Container(
-        width: double.infinity,
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                Color(0xff0F3460),
-                Color(0xff16213E),
-              ]),
-        ),
+      body: SingleChildScrollView(
+        physics: const ScrollPhysics(),
         child: Padding(
-          padding: const EdgeInsets.only(top: 15),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-            Padding(
-              padding: const EdgeInsets.only(left: 15),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Container(
-                    height: 40,
-                    width: 40,
-                    decoration: BoxDecoration(shape: BoxShape.circle,color: Colors.white),
-                    child: Icon(FontAwesomeIcons.userGroup),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 15),
-                      child: Text(
-                    "New Group",
-                    style:
-                        GoogleFonts.roboto(fontSize: 18, color: Colors.white),
-                  ))
-                ],
+          padding: const EdgeInsets.all(10),
+          child: SizedBox(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start, children: [
+                ListTile(
+            contentPadding: const EdgeInsets.all(0),
+            leading: Container(
+              width: 40,
+              height: 40,
+              decoration: const BoxDecoration(
+                shape: BoxShape.circle,
+                color: Color.fromARGB(255, 2, 54, 119),
+              ),
+              child: const Icon(
+                FontAwesomeIcons.userGroup,
+                color: Colors.white,
               ),
             ),
-            Text("Contacts Using App",style: GoogleFonts.roboto(fontSize: 18,color:Colors.blueGrey),),
-            GetX<PhoneController>(
-              builder: (controller) {
-                return AnimationLimiter(
-                  child: ListView.separated(
-                      shrinkWrap: true,
-                      itemBuilder: (context, index) {
-                        if (controller.contacts[index].phones.isNotEmpty) {
-                          var phonetest = controller
-                              .contacts[index].phones.first.number
-                              .replaceAll(" ", "");
-                          return AnimationConfiguration.staggeredList(
-                            position: index,
-                            duration: const Duration(milliseconds: 375),
-                            child: SlideAnimation(
-                              verticalOffset: 50.0,
-                              child: InkWell(
-                                onTap: () async {
-                                  int phoneindex = 0;
-                                  for (int i = 0;
-                                      i < controller.users.length;
-                                      i++) {
-                                    if (controller.users[i].phone ==
-                                        phonetest) {
-                                      phonefound = true;
-                                      phoneindex = i;
-                                      break;
-                                    }
-                                    phonefound = false;
-                                  }
-
-                                  if (phonefound) {
-                                    final data = await AuthServices()
-                                        .getUserInfo(
-                                            controller.users[phoneindex].phone);
-                                    if (data is User) {
-                                      var chatId;
-                                      chatId = await ChatServices()
-                                          .createChat(data.id);
-                                      if (chatId[0] == true) {
-                                        User recieverData = data;
-
-                                        Get.to(() => const ChatScreen(),
-                                            arguments: [
-                                              recieverData,
-                                              chatId[1]
-                                            ]);
-                                      }
-                                    } else {
-                                      Get.snackbar("Error ", data,
-                                          snackPosition: SnackPosition.BOTTOM,
-                                          duration: const Duration(seconds: 2));
-                                    }
-                                  } else {
-                                    Get.snackbar("Not Using App",
-                                        "This user isn't using our app",
-                                        snackPosition: SnackPosition.BOTTOM,
-                                        duration: const Duration(seconds: 2));
-                                  }
-                                },
-                                child: ListTile(
-                                  leading: const CircleAvatar(
-                                      backgroundImage: AssetImage(
-                                          "assets/images/avatar.png")),
-                                  title: Text(
-                                    controller.contacts[index].displayName,
-                                    style: const TextStyle(color: Colors.white),
-                                  ),
-                                  subtitle: Text(
-                                    controller.contacts[index].phones
-                                        .elementAt(0)
-                                        .number
-                                        .replaceAll(" ", ""),
-                                    style: const TextStyle(color: Colors.white),
-                                  ),
-                                ),
+            title: Text(
+              "Create New Group",
+              style: GoogleFonts.roboto(color: Colors.white),
+            ),
+                ),
+                Text(
+            "Contacts on Chattie",
+            style: GoogleFonts.roboto(fontSize: 18, color: Colors.white),
+                ),
+                GetX<PhoneController>(
+            builder: (controller) {
+              return AnimationLimiter(
+                child: ListView.separated(
+                    shrinkWrap: true,
+                    physics:const NeverScrollableScrollPhysics(),
+                    itemBuilder: (context, index) {
+                      return AnimationConfiguration.staggeredList(
+                        position: index,
+                        duration: const Duration(milliseconds: 375),
+                        child: SlideAnimation(
+                          verticalOffset: 50.0,
+                          child: InkWell(
+                            onTap: () async {},
+                            child: ListTile(
+                              contentPadding: const EdgeInsets.all(0),
+                              leading: CircleAvatar(
+                                  radius: 25,
+                                  backgroundImage: NetworkImage(controller
+                                      .searchedphones[index].profilephoto)),
+                              title: Text(
+                                controller.searchedphones[index].username,
+                                style: const TextStyle(color: Colors.white),
+                              ),
+                              subtitle: Text(
+                                controller.searchedphones[index].quote,
+                                style: GoogleFonts.roboto(
+                                    color: Colors.white60),
                               ),
                             ),
-                          );
-                        } else {
-                          return Container();
-                        }
-                      },
-                      separatorBuilder: ((context, index) {
-                        return const Divider();
-                      }),
-                      itemCount: controller.contacts.length),
+                          ),
+                        ),
+                      );
+                    },
+                    separatorBuilder: ((context, index) {
+                      return const Divider();
+                    }),
+                    itemCount: controller.searchedphones.length),
+              );
+            },
+                ),
+                Text(
+            "Invite to Chattie",
+            style: GoogleFonts.roboto(color: Colors.white, fontSize: 18),
+                ),
+                ListView.separated(
+              shrinkWrap: true,
+              physics:const NeverScrollableScrollPhysics(),
+              itemBuilder: (context, index) {
+                return ListTile(
+                  contentPadding: const EdgeInsets.all(0),
+                  leading: const CircleAvatar(
+                    radius: 25,
+                    backgroundImage: AssetImage("assets/images/avatar.png"),
+                  ),
+                  title: Text(
+                    controller.contacts[index].displayName,
+                    style: GoogleFonts.roboto(color: Colors.white),
+                  ),
+                  trailing: TextButton(
+                    child: Text("INVITE"),
+                    onPressed: () {},
+                  ),
                 );
               },
-            ),
-          ]),
+              separatorBuilder: (context, index) {
+                return const Divider();
+              },
+              itemCount: controller.contacts.length),
+              ]),
+          ),
         ),
       ),
     );

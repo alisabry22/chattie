@@ -8,6 +8,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl_phone_field/country_picker_dialog.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
@@ -32,6 +33,8 @@ class _SignUpScreen extends State<SignUpScreen>{
   bool obscurevalue=false;
    Uint8List? personalphoto;
  late XFile file;
+ late UserBox userBox;
+
 
   @override
   Widget build(BuildContext context) {
@@ -64,15 +67,19 @@ class _SignUpScreen extends State<SignUpScreen>{
                     child: InkWell(
                       onTap: ()async{
                     file = await  AuthServices().pickImage();
-                     
-                            Uint8List photo =await File(file.path).readAsBytes();
-                  
-                        if(photo!=null){
+      
+                            if(file!=null){
+                              Uint8List photo =await File(file.path).readAsBytes();
+                                if(photo!=null){
                           setState(() {
                             personalphoto=photo;
                           });
                         }
-
+                            }
+                            
+                  
+                      
+      
                       },
                       child:const Icon(FontAwesomeIcons.circlePlus))),
               ]),
@@ -169,17 +176,12 @@ class _SignUpScreen extends State<SignUpScreen>{
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(25),
                           gradient: const LinearGradient(colors: [
-                            Color(0xff3120E0),
-                            Color(0xff3B9AE1),
+                                 Color.fromARGB(255, 10, 5, 61),
+                                 Color.fromARGB(255, 9, 62, 103),
                           ]),
                         ),
-                        child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.transparent,
-                              disabledBackgroundColor: Colors.transparent,
-                              disabledForegroundColor: Colors.transparent,
-                              shadowColor: Colors.transparent,
-                            ),
+                        child: TextButton(
+                           
                             onPressed: () async {
                               if (formKey.currentState!.validate()) {
                                 String photourl;
@@ -197,6 +199,8 @@ class _SignUpScreen extends State<SignUpScreen>{
                                 if (respond[0] == true &&
                                     respond[1] is LoginResponse) {
                                   LoginResponse userresponse = respond[1];
+
+                                  objectBox.userBox.removeAll();
                                   //store user data Locally
                                   UserBox userBox = UserBox(
                                     userID: userresponse.user.id,
@@ -221,7 +225,7 @@ class _SignUpScreen extends State<SignUpScreen>{
                                 }
                               }
                             },
-                            child: const Text("Sign up")),
+                            child:  Text("Sign up",style: GoogleFonts.roboto(color:Colors.white,fontSize: 16),)),
                       ),
                     ],
                   ),

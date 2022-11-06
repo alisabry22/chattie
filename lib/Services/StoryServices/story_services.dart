@@ -122,18 +122,22 @@ class StoryServices extends GetxController {
 
       String storyurl = "${await Constants().detectDevice()}/story/uploadstory";
       final request = {"storyurl": storyImageurl};
-      final response = await http.post(Uri.parse(storyurl),
-          body: jsonEncode(request),
-          headers: {
-            "Authorization": "Bearer ${token.value}",
-            "Content-Type": "application/json"
-          });
-
-      if (response.statusCode == 200) {
-        print("uploaded successfully");
-      } else {
-        return jsonDecode(response.body)["msg"];
-      }
+      try {
+  final response = await http.post(Uri.parse(storyurl),
+      body: jsonEncode(request),
+      headers: {
+        "Authorization": "Bearer ${token.value}",
+        "Content-Type": "application/json"
+      });
+  
+  if (response.statusCode == 200) {
+    print("uploaded successfully");
+  } else {
+    return jsonDecode(response.body)["msg"];
+  }
+} catch (e) {
+  print("upload photo funcion ${e.toString()}");
+}
     }
   }
 

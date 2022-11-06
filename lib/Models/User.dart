@@ -22,11 +22,11 @@ class User {
   factory User.fromJson(Map<String, dynamic> json) {
     final id=json["_id"];
    final username = json["username"];
-    final email = json["email"];
-   final phone = json["phone"];
-   final countrycode = json["countrycode"];
-   final profilephoto=json["profilephoto"];
-   final quote=json["quote"];
+    final email = json["email"]??"";
+   final phone = json["phone"]??"";
+   final countrycode = json["countrycode"]??"";
+   final profilephoto=json["profilephoto"]??"";
+   final quote=json["quote"]??"";
 
     return User(
       id: id,

@@ -5,6 +5,7 @@ import 'package:chat_app/signup_screen.dart';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 
 class AuthScreen extends GetView<AuthServices>{
@@ -24,7 +25,7 @@ class AuthScreen extends GetView<AuthServices>{
     return Scaffold(
       
     backgroundColor: Colors.transparent,
-      appBar: AppBar(title: const Text("Login Screen"),backgroundColor:const Color(0xff16213E) ,elevation: 0,),
+      appBar: AppBar(title:  Text("Chattie",style: GoogleFonts.workSans(),),backgroundColor:const Color(0xff16213E) ,elevation: 0,),
       body: Container(
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.height,

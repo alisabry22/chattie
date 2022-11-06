@@ -14,7 +14,7 @@ class ChatScreen extends GetView<MessageServices>{
   @override
   Widget build(BuildContext context) {
    
-   
+
     final size = MediaQuery.of(context).size;
     final messageController = TextEditingController();
     return Scaffold(

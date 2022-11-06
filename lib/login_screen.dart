@@ -3,6 +3,7 @@ import 'package:chat_app/Services/AuthServices/login_response.dart';
 import 'package:chat_app/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 
 class LoginScreen extends StatefulWidget {
@@ -75,6 +76,7 @@ class _LoginScreenState extends State<LoginScreen>{
                               SizedBox(
                                 width: MediaQuery.of(context).size.width*0.8,
                                 child: TextFormField(
+                                  obscureText: true,
                                   style:const TextStyle(color: Colors.white),
                                   controller: passwordController,
                                   decoration: const InputDecoration(
@@ -92,18 +94,12 @@ class _LoginScreenState extends State<LoginScreen>{
                                   borderRadius: BorderRadius.circular(25),
                   
                                   gradient:const LinearGradient(colors: [
-                                    Color(0xff3120E0),
-                                   Color(0xff3B9AE1),
+                                    Color.fromARGB(255, 10, 5, 61),
+                                   Color.fromARGB(255, 9, 62, 103),
                                   ]),
                                 ),
-                                child: ElevatedButton(
-                                  style:ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.transparent,
-                                    disabledBackgroundColor: Colors.transparent,
-                                     disabledForegroundColor: Colors.transparent,
-                                    shadowColor: Colors.transparent,
-                                    
-                                  ),
+                                child: TextButton(
+                                   
                                     onPressed: ()async{
                                       if (_loginkey.currentState!.validate()) {
                                         final response =await  AuthServices().loginFunction(
@@ -120,7 +116,7 @@ class _LoginScreenState extends State<LoginScreen>{
                                         }
                                       }
                                     },
-                                    child: const Text("Sign in")),
+                                    child:  Text("Sign in",style: GoogleFonts.roboto(color: Colors.white,fontSize: 16),)),
                               ),
                             ],
                           )),

@@ -21,6 +21,9 @@ class PhoneController extends GetxController{
       RxList<User> users = RxList.empty();
       RxString userID="".obs;
       RxList<User>searchedphones=RxList.empty();
+      RxList<Contact>contactsnotusing=RxList.empty();
+        RxBool isloading=false.obs;
+
   var responsePhoneController;
 
 @override
@@ -62,6 +65,9 @@ class PhoneController extends GetxController{
    final data= phoneResponseFromJson(response.body);
  
     searchedphones.value=data.user;
+    for(var element in searchedphones){
+      contacts.remove(element.username);
+    }
     searchedphones.refresh();
     return data.user;
   }

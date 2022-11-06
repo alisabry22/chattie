@@ -70,19 +70,23 @@ await FlutterContacts.requestPermission();
         quote: ""
       );
 
-    final response = await http.post(Uri.parse(signupurl),
-        headers: {"Content-Type": "application/json"},
-        body: json.encode(usermodel.userToJson()));
-    if (response.statusCode == 200) {
-      final data = loginResponseFromJson(response.body);
-      saveTokenLocally(data.token);
-      saveIDLoggedInUser(data.user.id);
-
-      return [true,data];
-    } else {
-      
-      return [false,jsonDecode(response.body)["msg"]];
-    }
+    try {
+  final response = await http.post(Uri.parse(signupurl),
+      headers: {"Content-Type": "application/json"},
+      body: json.encode(usermodel.userToJson()));
+  if (response.statusCode == 200) {
+    final data = loginResponseFromJson(response.body);
+    saveTokenLocally(data.token);
+    saveIDLoggedInUser(data.user.id);
+  
+    return [true,data];
+  } else {
+    
+    return [false,jsonDecode(response.body)["msg"]];
+  }
+}  catch (e) {
+print("from Signup function ${e.toString()}");
+}
   }
   Future renewToken()async{
 String renewurl="${await Constants().detectDevice()}/user/renewtoken";
@@ -96,6 +100,7 @@ try {
   
   );
   if(response.statusCode==200){
+    print(jsonDecode(response.body));
   var data=loginResponseFromJson(response.body);
   String token=data.token;
   saveTokenLocally(token);
@@ -127,20 +132,25 @@ else
     final request = {"email": email, "password": password};
 
 
+  try {
   final response = await http .post(Uri.parse(loginUrl), body: jsonEncode(request), headers: {
     "Content-Type": "application/json",
   });
   
   if (response.statusCode == 200) {
    
-
+  print("decoded output   ${jsonDecode(response.body)}");
     final data = loginResponseFromJson(response.body);
+    
     saveTokenLocally(data.token);
     saveIDLoggedInUser(data.user.id);
     return [true,data];
   } else {
     return [false,jsonDecode(response.body)["msg"]];
   }
+} catch (e) {
+print("login function ${e.toString()}");
+}
 } 
   
 
