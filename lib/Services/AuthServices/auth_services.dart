@@ -8,7 +8,6 @@ import 'package:chat_app/Services/AuthServices/login_response.dart';
 import 'package:chat_app/auth_screen.dart';
 import 'package:chat_app/home_screen.dart';
 import 'package:cloudinary_public/cloudinary_public.dart';
-import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
@@ -18,7 +17,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 class AuthServices extends GetxController {
  
   
-   RxList<Contact> contacts=RxList.empty();
     RxBool islogin=true.obs;
     RxBool obscurevalue=false.obs;
 
@@ -52,10 +50,7 @@ class AuthServices extends GetxController {
   }
   
  
-Future requestContacts ()async{
-await FlutterContacts.requestPermission();
 
-}
 
 
   Future signUpFunction(String username, String password, String email,String phone, String countrycode,String profilephoto) async {

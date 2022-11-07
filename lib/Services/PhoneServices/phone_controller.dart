@@ -5,7 +5,7 @@ import 'package:chat_app/Constants/constants.dart';
 import 'package:chat_app/Models/ObjectBox/user_box.dart';
 import 'package:chat_app/Services/PhoneServices/phone_response.dart';
 import 'package:chat_app/objectbox.g.dart';
-import 'package:flutter_contacts/flutter_contacts.dart';
+import 'package:contacts_service/contacts_service.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -18,13 +18,11 @@ class PhoneController extends GetxController{
    RxList<String> phones=RxList.empty();
     RxList<Contact> contacts =RxList.empty();
     RxBool issearching = false.obs;
-      RxList<User> users = RxList.empty();
       RxString userID="".obs;
       RxList<User>searchedphones=RxList.empty();
-      RxList<Contact>contactsnotusing=RxList.empty();
+     List<Contact>deletedContacts=[];
         RxBool isloading=false.obs;
 
-  var responsePhoneController;
 
 @override
   void onInit()async {
@@ -33,17 +31,16 @@ class PhoneController extends GetxController{
         userID.refresh();
     super.onInit();
     requestContacts();
-    getPhonesList(contacts);
 
 
   }
-  Future getPhonesList(RxList<Contact>contacts)async{
+  Future  getPhonesList(RxList<Contact>contacts)async{
   String phoneHtppUrl="${await Constants().detectDevice()}/phone/searchphone";
     contacts.forEach((element) {
-           if(element.phones.isNotEmpty)
+           if(element.phones!.isNotEmpty)
       {
        
-          phones.add(element.phones.first.number.replaceAll(" ", ""));
+          phones.add(element.phones!.first.value!.replaceAll(" ", ""));
        
       }
      
@@ -54,7 +51,6 @@ class PhoneController extends GetxController{
     try {
      SharedPreferences sharedPreferences=await SharedPreferences.getInstance();
      String? token= sharedPreferences.getString("token");
-     print("token$token");
   final response=await http.post(Uri.parse(phoneHtppUrl),body: json.encode(phones),headers: {
     "Content-Type": "application/json",
     "Authorization":'Bearer $token'
@@ -65,9 +61,8 @@ class PhoneController extends GetxController{
    final data= phoneResponseFromJson(response.body);
  
     searchedphones.value=data.user;
-    for(var element in searchedphones){
-      contacts.remove(element.username);
-    }
+    
+  
     searchedphones.refresh();
     return data.user;
   }
@@ -85,16 +80,19 @@ on SocketException catch(e){
     
     
 
-  void   requestContacts() async {
+  Future   requestContacts() async {
   
-    if (await FlutterContacts.requestPermission()) {
-      List<Contact> democontact = await FlutterContacts.getContacts(withProperties: true);
 
-if(democontact.isNotEmpty){
+      List<Contact> democontact = await ContactsService.getContacts(withThumbnails: false,photoHighResolution: false);
+      print(democontact.toList());
+if(democontact.isNotEmpty ){
  for (var element in democontact) {
-for (var phone in element.phones) {
-  phones.add(phone.number.replaceAll(" ", "").toString());
+
+    for (var phone in element.phones!) {
+  phones.add(phone.value!.replaceAll(" ", "").toString());
 }
+  }
+
  }
  
  
@@ -108,22 +106,19 @@ UserBox? userBox=query.findFirst();
 
 
   contacts.value=democontact;
-
+  contacts.refresh();
+await getPhonesList(contacts);
       
 }
-      
-      responsePhoneController = await getPhonesList(contacts);
-      if (responsePhoneController is List) {
-      users.value=responsePhoneController;
-      }
-    }
-  }
+
+    
+  
 
 
     void runfilter(String value)async{
     if(value.isNotEmpty){
       var filterResult;
-      filterResult= contacts.where((element) => element.displayName.toLowerCase().contains(value.toLowerCase())).toList();
+      filterResult= contacts.where((element) => element.displayName!.toLowerCase().contains(value.toLowerCase())).toList();
       
       
         contacts.value=filterResult;
@@ -131,7 +126,7 @@ UserBox? userBox=query.findFirst();
     
     }
     else{
-      final dummylist=await FlutterContacts.getContacts(withProperties: true);
+      final dummylist=await ContactsService.getContacts(withThumbnails: false,photoHighResolution: false);
    
         contacts.value=dummylist;
     }
