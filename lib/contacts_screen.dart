@@ -43,7 +43,7 @@ class ContactsScreen extends GetView<PhoneController> {
                       hintText: "Search...",
                       hintStyle: TextStyle(color: Colors.white),
                     ),
-                  )
+                  ) 
                 : Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -52,7 +52,7 @@ class ContactsScreen extends GetView<PhoneController> {
                         style: GoogleFonts.roboto(),
                       ),
                       Text(
-                        "${controller.contacts.length} contacts",
+                        "${controller.searchedphones.length} contacts",
                         style: GoogleFonts.openSans(
                           color: Colors.grey,
                         ),
@@ -188,19 +188,28 @@ class ContactsScreen extends GetView<PhoneController> {
                               physics:const NeverScrollableScrollPhysics(),
                               itemBuilder: (context, index) {
                   
-                  return ListTile(
-                    contentPadding: const EdgeInsets.all(0),
-                    leading: const CircleAvatar(
-                      radius: 25,
-                      backgroundImage: AssetImage("assets/images/avatar.png"),
-                    ),
-                    title: Text(
-                      controller.contacts[index].displayName??"",
-                      style: GoogleFonts.roboto(color: Colors.white),
-                    ),
-                    trailing: TextButton(
-                      child: Text("INVITE"),
-                      onPressed: () {},
+                  return InkWell(
+                    onTap: (){
+
+                      controller.contacts[index].phones!.forEach((element) {
+                        print(element.value);
+                      });
+                        },
+                    child: ListTile(
+                      contentPadding: const EdgeInsets.all(0),
+                      leading: const CircleAvatar(
+                        radius: 25,
+                        backgroundImage: AssetImage("assets/images/avatar.png"),
+                      ),
+                      title: Text(
+                        controller.contacts[index].displayName??"no name",
+                        style: GoogleFonts.roboto(color: Colors.white),
+                      ),
+                     
+                      trailing: TextButton(
+                        child: Text("INVITE"),
+                        onPressed: () {},
+                      ),
                     ),
                   );
                               },

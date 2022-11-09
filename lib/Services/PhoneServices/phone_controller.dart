@@ -84,7 +84,26 @@ on SocketException catch(e){
   
 
       List<Contact> democontact = await ContactsService.getContacts(withThumbnails: false,photoHighResolution: false);
-      print(democontact.toList());
+      print(democontact.length);
+
+
+      //to do not include spaces in numbers 
+
+      contacts.forEach((element) {
+      if(element.phones!=null){
+        element.phones!.forEach((phone) {
+          phone.value!.replaceAll(" ", "");
+        });
+      }
+       });
+    // for( var element in democontact){
+    //  for(var phone in element.phones!){
+    //   if(element.phones!=null){
+    //        print("phones for ${element.displayName} ${phone.value}");
+    //   }
+   
+    //  }
+    // }
 if(democontact.isNotEmpty ){
  for (var element in democontact) {
 
