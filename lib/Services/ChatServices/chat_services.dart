@@ -45,9 +45,9 @@ String? token=sharedprefs.getString("token");
     print(response.body);
   if(response.statusCode==200){
   
-   final data=json.decode(response.body)["chatId"];
+   String chatID=json.decode(response.body)["chatId"];
 
-   return [true,data];
+   return [true,chatID];
   }
   else{
     
@@ -103,6 +103,7 @@ print(e.toString());}
     print("get all chats called");
 
     String createChatapi="${await Constants().detectDevice()}/chat/";
+    print(createChatapi);
 SharedPreferences sharedprefs=await SharedPreferences.getInstance();
 String? token=sharedprefs.getString("token");
 
@@ -113,11 +114,12 @@ String? token=sharedprefs.getString("token");
    "Content-Type": "application/json",
    "Authorization":"Bearer $token"
    });
-  
-   if(response.statusCode==200){
+print(jsonDecode(response.body));  
+ if(response.statusCode==200){
+    
     final data=chatResponseFromJson(response.body);
   chats.value=data.chats;
-  update();
+chats.refresh();
 
    }
    else{

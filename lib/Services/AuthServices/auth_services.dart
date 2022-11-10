@@ -95,7 +95,6 @@ try {
   
   );
   if(response.statusCode==200){
-    print(jsonDecode(response.body));
   var data=loginResponseFromJson(response.body);
   String token=data.token;
   saveTokenLocally(token);
@@ -134,7 +133,6 @@ else
   
   if (response.statusCode == 200) {
    
-  print("decoded output   ${jsonDecode(response.body)}");
     final data = loginResponseFromJson(response.body);
     
     saveTokenLocally(data.token);

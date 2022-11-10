@@ -28,25 +28,14 @@ class PhoneController extends GetxController{
   void onInit()async {
          SharedPreferences sharedprefs=await SharedPreferences.getInstance();
         userID.value = sharedprefs.getString("ID")!;
-        userID.refresh();
     super.onInit();
     requestContacts();
 
 
   }
-  Future  getPhonesList(RxList<Contact>contacts)async{
+  Future  getPhonesList()async{
   String phoneHtppUrl="${await Constants().detectDevice()}/phone/searchphone";
-    contacts.forEach((element) {
-           if(element.phones!.isNotEmpty)
-      {
-       
-          phones.add(element.phones!.first.value!.replaceAll(" ", ""));
-       
-      }
-     
 
-
-    });
 
     try {
      SharedPreferences sharedPreferences=await SharedPreferences.getInstance();
@@ -61,6 +50,9 @@ class PhoneController extends GetxController{
    final data= phoneResponseFromJson(response.body);
  
     searchedphones.value=data.user;
+
+//remove contacts that use app from all contacts list
+   removeAppContactsFromAll();
     
   
     searchedphones.refresh();
@@ -70,63 +62,61 @@ class PhoneController extends GetxController{
   
     return jsonDecode(response.body)["msg"];
   }
-} on TimeoutException catch (e) {
-print(e);
-}
-on SocketException catch(e){
-  print(e);
+} catch(e){
+  print(e.toString());
 }
   }
     
     
 
   Future   requestContacts() async {
-  
-
-      List<Contact> democontact = await ContactsService.getContacts(withThumbnails: false,photoHighResolution: false);
-      print(democontact.length);
-
-
-      //to do not include spaces in numbers 
-
-      contacts.forEach((element) {
-      if(element.phones!=null){
-        element.phones!.forEach((phone) {
-          phone.value!.replaceAll(" ", "");
-        });
-      }
-       });
-    // for( var element in democontact){
-    //  for(var phone in element.phones!){
-    //   if(element.phones!=null){
-    //        print("phones for ${element.displayName} ${phone.value}");
-    //   }
-   
-    //  }
-    // }
-if(democontact.isNotEmpty ){
- for (var element in democontact) {
-
-    for (var phone in element.phones!) {
-  phones.add(phone.value!.replaceAll(" ", "").toString());
-}
-  }
-
- }
- 
- 
-
-Query<UserBox> query=objectBox.userBox.query(UserBox_.userID.equals(userID.value)).build();
+Query<UserBox> query=objectBox.userBox.query().build();
 UserBox? userBox=query.findFirst();
 
 
-  userBox!.phones=phones.toSet().toList();
+    //empty phones first 
+    phones.value=[];
+
+      List<Contact> democontact = await ContactsService.getContacts(withThumbnails: false,photoHighResolution: false);
+
+
+      //to not include spaces in numbers to bet sent to api clearly
+  Contact mycontactToDelete=Contact();
+      for (var contact in democontact){
+        if(contact.phones!=null && contact.phones!.isNotEmpty){
+          for (var phone in contact.phones!){
+           
+          phone.value=  phone.value!.replaceAll(" ", "");
+             if(phone.value==userBox!.phone){
+              mycontactToDelete=contact;
+             }
+        }
+        }
+         
+      }
+      //to remove my contact if present in contacts
+ democontact.remove(mycontactToDelete);
+
+
+//add phones to the list of phones 
+  for (var contact in democontact) {
+    if(contact.phones!=null){
+      for (var phone in contact.phones!) {
+        phones.add(phone.value!);
+      }
+    }
+  }
+
+  //save phones localy to this user   
+  userBox!.phones=phones;
   objectBox.userBox.put(userBox);
 
 
   contacts.value=democontact;
   contacts.refresh();
-await getPhonesList(contacts);
+await getPhonesList();
+
+isloading.value=false;
       
 }
 
@@ -149,5 +139,31 @@ await getPhonesList(contacts);
    
         contacts.value=dummylist;
     }
+}
+
+void removeAppContactsFromAll(){
+   List<int>indexes_to_Delete=[];
+    for (var element in searchedphones) {
+    for(int i=0 ; i<contacts.length;i++){
+      if(contacts[i].phones!=null){
+        for(int k=0 ; k<contacts[i].phones!.length ; k++){
+          if(contacts[i].phones![k].value==element.phone){
+            indexes_to_Delete.add(i);
+          }
+        }
+      }
+    }
+    }
+List<Contact>contactsToRemove=[];
+
+for (var element in indexes_to_Delete) { 
+  contactsToRemove.add(contacts[element]);
+}
+
+for (var element in contactsToRemove) { 
+  contacts.remove(element);
+}
+
+  contacts.refresh();
 }
   }

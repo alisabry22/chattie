@@ -1,5 +1,7 @@
 
+import 'package:chat_app/Services/ChatServices/chat_services.dart';
 import 'package:chat_app/Services/PhoneServices/phone_controller.dart';
+import 'package:chat_app/chat_screen.dart';
 import 'package:chat_app/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
@@ -64,6 +66,9 @@ class ContactsScreen extends GetView<PhoneController> {
         actions: [
           GetX<PhoneController>(
             builder: (controller){
+
+              controller.requestContacts();
+              
               return controller.isloading.value?const  Center(
              child:  SizedBox(
               width: 10,
@@ -88,13 +93,10 @@ class ContactsScreen extends GetView<PhoneController> {
                 PopupMenuItem(
                   child: const Text("Refresh"),
                   onTap: () {
-                    print("before ${controller.isloading.value}");
+                   
                    controller.isloading.value=true;
-                    controller.requestContacts();
-                      controller.isloading.value=false;
-                          print("after  ${controller.isloading.value}");
-
-
+                   
+                 
                   },
                 ),
               ];
@@ -134,21 +136,20 @@ class ContactsScreen extends GetView<PhoneController> {
                 ),
                 GetX<PhoneController>(
             builder: (controller) {
-              print(controller.searchedphones.toList());
               return ListView.separated(
                   shrinkWrap: true,
                   physics:const NeverScrollableScrollPhysics(),
                   itemBuilder: (context, index) {
                     
-                    if(controller.searchedphones[index].phone==objectBox.userBox.getAll().first.phone){
-                      return Container();
-              
-                    }
-                    else{
-                     
-                     
                       return  InkWell(
-                          onTap: () async {},
+                          onTap: () async {
+                            var data;
+                          data=await  ChatServices().createChat(controller.searchedphones[index].id);
+                          if(data[0]==true){
+
+                            Get.to(()=>const ChatScreen(),arguments:[controller.searchedphones[index],data[1]] );
+                          }
+                          },
                           child: ListTile(
                             contentPadding: const EdgeInsets.all(0),
                             leading: CircleAvatar(
@@ -166,7 +167,7 @@ class ContactsScreen extends GetView<PhoneController> {
                             ),
                           ),
                         );
-                    }
+                    
                   },
                 
               
@@ -188,28 +189,20 @@ class ContactsScreen extends GetView<PhoneController> {
                               physics:const NeverScrollableScrollPhysics(),
                               itemBuilder: (context, index) {
                   
-                  return InkWell(
-                    onTap: (){
-
-                      controller.contacts[index].phones!.forEach((element) {
-                        print(element.value);
-                      });
-                        },
-                    child: ListTile(
-                      contentPadding: const EdgeInsets.all(0),
-                      leading: const CircleAvatar(
-                        radius: 25,
-                        backgroundImage: AssetImage("assets/images/avatar.png"),
-                      ),
-                      title: Text(
-                        controller.contacts[index].displayName??"no name",
-                        style: GoogleFonts.roboto(color: Colors.white),
-                      ),
-                     
-                      trailing: TextButton(
-                        child: Text("INVITE"),
-                        onPressed: () {},
-                      ),
+                  return ListTile(
+                    contentPadding: const EdgeInsets.all(0),
+                    leading: const CircleAvatar(
+                      radius: 25,
+                      backgroundImage: AssetImage("assets/images/avatar.png"),
+                    ),
+                    title: Text(
+                      controller.contacts[index].displayName??"no name",
+                      style: GoogleFonts.roboto(color: Colors.white),
+                    ),
+                   
+                    trailing: TextButton(
+                      child: Text("INVITE",style: GoogleFonts.roboto(),),
+                      onPressed: () {},
                     ),
                   );
                               },

@@ -45,6 +45,7 @@ class ChatRooms extends GetView<ChatServices> {
                       recieverData = controller.chats[index]
                           .users
                           .firstWhere((element) => element.id != controller.currentUserID.value);
+                          print(recieverData.toString());
                       return InkWell(
                         onTap: (){
                   
