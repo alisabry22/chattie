@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:chat_app/Constants/constants.dart';
 import 'package:chat_app/Models/user.dart';
@@ -67,7 +68,7 @@ class MessageServices extends GetxController{
      "Content-Type": "application/json",
      "Authorization":"Bearer $token"
   });
-  print(response.statusCode);
+  log(jsonDecode(response.body).toString());
   if(response.statusCode==200){
     final data=messageResponseFromJson(response.body);
     messages.value=data.messages;

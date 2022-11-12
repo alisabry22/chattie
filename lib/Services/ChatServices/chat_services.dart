@@ -1,9 +1,12 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:chat_app/Constants/constants.dart';
 import 'package:chat_app/Models/message_model.dart';
+import 'package:chat_app/Models/userchatModel.dart';
 import 'package:chat_app/Services/ChatServices/chat_response.dart';
 import 'package:chat_app/socketServices/socket_services.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -109,25 +112,27 @@ String? token=sharedprefs.getString("token");
 
 
 
+
   try {
   final response=await http.get(Uri.parse(createChatapi),headers: {
    "Content-Type": "application/json",
    "Authorization":"Bearer $token"
    });
-print(jsonDecode(response.body));  
- if(response.statusCode==200){
+  log(jsonDecode(response.body).toString());  
+   if(response.statusCode==200){
     
-    final data=chatResponseFromJson(response.body);
+    final data=userChatModelfromJson(response.body);
   chats.value=data.chats;
-chats.refresh();
-
+  chats.refresh();
+  
    }
    else{
     return jsonDecode(response.body)["msg"];
    }
-} catch (e) {
- print(e.toString());
+} on Exception catch (e) {
+  log("from chat rooms page ${e.toString()}");
 }
+
 
 
 

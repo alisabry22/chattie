@@ -1,3 +1,6 @@
+import 'dart:developer';
+import 'dart:isolate';
+
 import 'package:chat_app/Models/user.dart';
 import 'package:chat_app/chat_screen.dart';
 import 'package:chat_app/contacts_screen.dart';
@@ -45,7 +48,6 @@ class ChatRooms extends GetView<ChatServices> {
                       recieverData = controller.chats[index]
                           .users
                           .firstWhere((element) => element.id != controller.currentUserID.value);
-                          print(recieverData.toString());
                       return InkWell(
                         onTap: (){
                   
@@ -54,7 +56,10 @@ class ChatRooms extends GetView<ChatServices> {
            
                         },
                         child:controller.chats[index].messageModel!=null? ListTile(
-                          leading:recieverData.profilephoto.isNotEmpty?Image.network(recieverData.profilephoto) :const CircleAvatar(
+                          leading:recieverData.profilephoto.isNotEmpty?CircleAvatar(
+                            backgroundImage: NetworkImage(recieverData.profilephoto),
+                            radius:25 ,
+                          ) :const CircleAvatar(
                             backgroundImage: AssetImage("assets/images/avatar.png"),
                             radius: 25,
                           ),

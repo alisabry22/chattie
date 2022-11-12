@@ -1,3 +1,4 @@
+import 'dart:developer';
 
 import 'package:chat_app/Services/ChatServices/chat_services.dart';
 import 'package:chat_app/Services/PhoneServices/phone_controller.dart';
@@ -43,9 +44,9 @@ class ContactsScreen extends GetView<PhoneController> {
                     decoration: const InputDecoration(
                       border: InputBorder.none,
                       hintText: "Search...",
-                      hintStyle: TextStyle(color: Colors.white),
+                      hintStyle: TextStyle(color: Colors.grey),
                     ),
-                  ) 
+                  )
                 : Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -65,22 +66,22 @@ class ContactsScreen extends GetView<PhoneController> {
         ),
         actions: [
           GetX<PhoneController>(
-            builder: (controller){
-
+            builder: (controller) {
               controller.requestContacts();
-              
-              return controller.isloading.value?const  Center(
-             child:  SizedBox(
-              width: 10,
-              height: 15,
-                child:CircularProgressIndicator(
-                 strokeWidth: 3, 
-                  color: Colors.white,
-                ) ,
-              ),
-                   ):const SizedBox();
+
+              return controller.isloading.value
+                  ? const Center(
+                      child: SizedBox(
+                        width: 10,
+                        height: 15,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 3,
+                          color: Colors.white,
+                        ),
+                      ),
+                    )
+                  : const SizedBox();
             },
-          
           ),
           IconButton(
               onPressed: () {
@@ -93,10 +94,7 @@ class ContactsScreen extends GetView<PhoneController> {
                 PopupMenuItem(
                   child: const Text("Refresh"),
                   onTap: () {
-                   
-                   controller.isloading.value=true;
-                   
-                 
+                    controller.isloading.value = true;
                   },
                 ),
               ];
@@ -105,50 +103,51 @@ class ContactsScreen extends GetView<PhoneController> {
         ],
       ),
       body: SingleChildScrollView(
-   
         child: Padding(
           padding: const EdgeInsets.all(10),
           child: SizedBox(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start, children: [
-                ListTile(
-            contentPadding: const EdgeInsets.all(0),
-            leading: Container(
-              width: 40,
-              height: 40,
-              decoration: const BoxDecoration(
-                shape: BoxShape.circle,
-                color: Color.fromARGB(255, 2, 54, 119),
-              ),
-              child: const Icon(
-                FontAwesomeIcons.userGroup,
-                color: Colors.white,
-              ),
-            ),
-            title: Text(
-              "Create New Group",
-              style: GoogleFonts.roboto(color: Colors.white),
-            ),
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              ListTile(
+                contentPadding: const EdgeInsets.all(0),
+                leading: Container(
+                  width: 40,
+                  height: 40,
+                  decoration: const BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Color.fromARGB(255, 2, 54, 119),
+                  ),
+                  child: const Icon(
+                    FontAwesomeIcons.userGroup,
+                    color: Colors.white,
+                  ),
                 ),
-                Text(
-            "Contacts on Chattie",
-            style: GoogleFonts.roboto(fontSize: 18, color: Colors.white),
+                title: Text(
+                  "Create New Group",
+                  style: GoogleFonts.roboto(color: Colors.white),
                 ),
-                GetX<PhoneController>(
-            builder: (controller) {
-              return ListView.separated(
-                  shrinkWrap: true,
-                  physics:const NeverScrollableScrollPhysics(),
-                  itemBuilder: (context, index) {
-                    
-                      return  InkWell(
+              ),
+              Text(
+                "Contacts on Chattie",
+                style: GoogleFonts.roboto(fontSize: 18, color: Colors.white),
+              ),
+              GetX<PhoneController>(
+                builder: (controller) {
+                  return ListView.separated(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemBuilder: (context, index) {
+                        return InkWell(
                           onTap: () async {
                             var data;
-                          data=await  ChatServices().createChat(controller.searchedphones[index].id);
-                          if(data[0]==true){
-
-                            Get.to(()=>const ChatScreen(),arguments:[controller.searchedphones[index],data[1]] );
-                          }
+                            data = await ChatServices().createChat(
+                                controller.searchedphones[index].id);
+                            if (data[0] == true) {
+                              Get.to(() => const ChatScreen(), arguments: [
+                                controller.searchedphones[index],
+                                data[1]
+                              ]);
+                            }
                           },
                           child: ListTile(
                             contentPadding: const EdgeInsets.all(0),
@@ -162,65 +161,67 @@ class ContactsScreen extends GetView<PhoneController> {
                             ),
                             subtitle: Text(
                               controller.searchedphones[index].quote,
-                              style: GoogleFonts.roboto(
-                                  color: Colors.white60),
+                              style: GoogleFonts.roboto(color: Colors.white60),
                             ),
                           ),
                         );
-                    
-                  },
-                
-              
-                  separatorBuilder: ((context, index) {
-                    return const Divider();
-                  }),
-                  itemCount: controller.searchedphones.length);
-            },
-                ),
-                Text(
-            "Invite to Chattie",
-            style: GoogleFonts.roboto(color: Colors.white, fontSize: 18),
-                ),
-                GetX<PhoneController>(
-                  builder: (controller) {
-                    if(controller.contacts.isNotEmpty){
-                         return ListView.separated(
-                              shrinkWrap: true,
-                              physics:const NeverScrollableScrollPhysics(),
-                              itemBuilder: (context, index) {
-                  
-                  return ListTile(
-                    contentPadding: const EdgeInsets.all(0),
-                    leading: const CircleAvatar(
-                      radius: 25,
-                      backgroundImage: AssetImage("assets/images/avatar.png"),
-                    ),
-                    title: Text(
-                      controller.contacts[index].displayName??"no name",
-                      style: GoogleFonts.roboto(color: Colors.white),
-                    ),
-                   
-                    trailing: TextButton(
-                      child: Text("INVITE",style: GoogleFonts.roboto(),),
-                      onPressed: () {},
-                    ),
-                  );
-                              },
-                              separatorBuilder: (context, index) {
-                  return const Divider();
-                              },
-                              itemCount: controller.contacts.length);
-                    }
-                    else{
-                      return Center(
-                        child: Text("Add More People to Chat ",style: GoogleFonts.roboto(color:Colors.white,fontSize: 16),),
-                      );
-                    }
-                 
-                  },
-                   
-                ),
-              ]),
+                      },
+                      separatorBuilder: ((context, index) {
+                        return const Divider();
+                      }),
+                      itemCount: controller.searchedphones.length);
+                },
+              ),
+              Text(
+                "Invite to Chattie",
+                style: GoogleFonts.roboto(color: Colors.white, fontSize: 18),
+              ),
+              GetX<PhoneController>(
+                builder: (controller) {
+                  if (controller.contactsToShow.isNotEmpty) {
+                    return ListView.separated(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemBuilder: (context, index) {
+                      
+                          return ListTile(
+                            contentPadding: const EdgeInsets.all(0),
+                            leading: const CircleAvatar(
+                              radius: 25,
+                              backgroundImage:
+                                  AssetImage("assets/images/avatar.png"),
+                            ),
+                            title:  Text(
+                                    controller.contactsToShow[index].displayName.toString(),
+                                       
+                                    style:
+                                        GoogleFonts.roboto(color: Colors.white)),
+                              
+                            trailing: TextButton(
+                              child: Text(
+                                "INVITE",
+                                style: GoogleFonts.roboto(),
+                              ),
+                              onPressed: () {},
+                            ),
+                          );
+                        },
+                        separatorBuilder: (context, index) {
+                          return const Divider();
+                        },
+                        itemCount: controller.contactsToShow.length);
+                  } else {
+                    return Center(
+                      child: Text(
+                        "Add More People to Chat ",
+                        style: GoogleFonts.roboto(
+                            color: Colors.white, fontSize: 16),
+                      ),
+                    );
+                  }
+                },
+              ),
+            ]),
           ),
         ),
       ),
