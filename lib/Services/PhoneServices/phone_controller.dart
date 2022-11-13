@@ -24,7 +24,12 @@ class PhoneController extends GetxController{
     RxBool issearching = false.obs;
       RxString userID="".obs;
       RxList<User>searchedphones=RxList.empty();
+
+      //contacts that can be user to filter in users the use app
+RxList<User> searchedphonesFilter=RxList.empty();
+
         RxBool isloading=false.obs;
+    
 
 
 @override
@@ -53,12 +58,15 @@ class PhoneController extends GetxController{
    final data= phoneResponseFromJson(response.body);
  
     searchedphones.value=data.user;
+    searchedphonesFilter.value=searchedphones;
+      searchedphones.refresh();
+    searchedphonesFilter.refresh();
 
 //remove contacts that use app from all contacts list
  //  removeAppContactsFromAll();
     
   
-    searchedphones.refresh();
+  
     return data.user;
   }
   else{
@@ -143,9 +151,20 @@ isloading.value=false;
  void runfilter(String query)async{
       log("run filter called $query");
         List<Contact> filterResult=[];
-       
-        allContacts.refresh();
+        List<User> searchphonesfilter=[];
       filterResult.addAll(allContacts);
+
+      if(query.isNotEmpty){
+        List<User>dummysearchusers=[];
+        searchedphonesFilter.forEach((element) {
+          if(element.username.toLowerCase().contains(query.toLowerCase())){
+            dummysearchusers.add(element);
+          }
+        });
+
+        }else{
+
+        }
      
     if(query.isNotEmpty){
       List<Contact>dummySearchList=[];
