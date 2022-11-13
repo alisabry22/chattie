@@ -56,7 +56,7 @@ class StoryServices extends GetxController {
   }
 
   void storySocketService() {
-   searchedusers.value= Get.find<PhoneController>().searchedphones;
+   searchedusers.value= Get.find<PhoneController>().usersInApp;
    searchedusers.refresh();
    
     Socket socket = Get.find<SocketServices>().socket;

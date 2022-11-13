@@ -23,7 +23,9 @@ class PhoneController extends GetxController{
     RxList<Contact> contactsToShow=RxList.empty();
     RxBool issearching = false.obs;
       RxString userID="".obs;
-      RxList<User>searchedphones=RxList.empty();
+
+      //users using our app
+      RxList<User>usersInApp=RxList.empty();
 
       //contacts that can be user to filter in users the use app
 RxList<User> searchedphonesFilter=RxList.empty();
@@ -57,13 +59,13 @@ RxList<User> searchedphonesFilter=RxList.empty();
   
    final data= phoneResponseFromJson(response.body);
  
-    searchedphones.value=data.user;
-    searchedphonesFilter.value=searchedphones;
-      searchedphones.refresh();
+    usersInApp.value=data.user;
+    searchedphonesFilter.value=usersInApp;
+      usersInApp.refresh();
     searchedphonesFilter.refresh();
 
 //remove contacts that use app from all contacts list
- //  removeAppContactsFromAll();
+  removeAppContactsFromAll();
     
   
   
@@ -152,27 +154,37 @@ isloading.value=false;
       log("run filter called $query");
         List<Contact> filterResult=[];
         List<User> searchphonesfilter=[];
-      filterResult.addAll(allContacts);
 
+
+      filterResult.addAll(allContacts);
+      searchphonesfilter.addAll(usersInApp);
+
+//filter users using app
       if(query.isNotEmpty){
         List<User>dummysearchusers=[];
-        searchedphonesFilter.forEach((element) {
+        for (var element in searchphonesfilter) {
           if(element.username.toLowerCase().contains(query.toLowerCase())){
             dummysearchusers.add(element);
           }
-        });
+        }
+        log(dummysearchusers.toString());
+        searchedphonesFilter.value=dummysearchusers;
+        searchedphonesFilter.refresh();
 
         }else{
-
+          searchedphonesFilter.value=usersInApp;
+          searchedphonesFilter.refresh();
         }
-     
+
+
+  //filter users which they are not in our  app   
     if(query.isNotEmpty){
       List<Contact>dummySearchList=[];
-     filterResult.forEach((contact) {
+     for (var contact in filterResult) {
       if(contact.displayName!.toLowerCase().contains(query.toLowerCase())){
         dummySearchList.add(contact);
       }
-     });
+     }
 
        
         contactsToShow.value=dummySearchList;
@@ -186,29 +198,30 @@ isloading.value=false;
     }
 }
 
-// void removeAppContactsFromAll(){
-//    List<int>indexes_to_Delete=[];
-//     for (var element in searchedphones) {
-//     for(int i=0 ; i<contactsToShow.length;i++){
-//       if(contactsToShow[i].phones!=null){
-//         for(int k=0 ; k<contactsToShow[i].phones!.length ; k++){
-//           if(contactsToShow[i].phones![k].value==element.phone){
-//             indexes_to_Delete.add(i);
-//           }
-//         }
-//       }
-//     }
-//     }
-// List<Contact>contactsToRemove=[];
 
-// for (var element in indexes_to_Delete) { 
-//   contactsToRemove.add(contactsToShow[element]);
-// }
+//remove contacts that use app from all contacts list 
+void removeAppContactsFromAll(){
+   List<int>indexes_to_Delete=[];
+    for (var element in usersInApp) {
+    for(int i=0 ; i<contactsToShow.length;i++){
+      if(contactsToShow[i].phones!=null){
+        for(int k=0 ; k<contactsToShow[i].phones!.length ; k++){
+          if(contactsToShow[i].phones![k].value==element.phone){
+            indexes_to_Delete.add(i);
+          }
+        }
+      }
+    }
+    }
+List<Contact>contactsToRemove=[];
 
-// for (var element in contactsToShow) { 
-//   contactsToShow.remove(element);
-// }
+for (var element in indexes_to_Delete) { 
+  contactsToRemove.add(contactsToShow[element]);
+}
 
-//   contactsToShow.refresh();
-// }
+print(contactsToRemove.length);
+
+contactsToShow.removeWhere((element) => contactsToRemove.contains(element));
+  contactsToShow.refresh();
+}
   }

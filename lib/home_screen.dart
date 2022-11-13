@@ -2,6 +2,7 @@ import 'package:chat_app/Models/ObjectBox/user_box.dart';
 import 'package:chat_app/calls_page.dart';
 import 'package:chat_app/auth_screen.dart';
 import 'package:chat_app/chat_rooms.dart';
+import 'package:chat_app/create_group.dart';
 import 'package:chat_app/main.dart';
 import 'package:chat_app/objectbox.g.dart';
 import 'package:chat_app/settings_screen.dart';
@@ -59,9 +60,12 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
           PopupMenuButton(
             itemBuilder: (context) {
               return  [
-               const PopupMenuItem(
+                PopupMenuItem(
                   value: 1,
-                  child: Text("New Group"),
+                  child:const Text("New Group"),
+                  onTap: (){
+                    Get.to(()=>const CreateGroup());
+                  },
                 ),
               const  PopupMenuItem(
                  

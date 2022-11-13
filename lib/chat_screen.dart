@@ -69,9 +69,10 @@ class ChatScreen extends GetView<MessageServices> {
                       );
                     }
 
-                    if (controller.messages[index].senderId ==
-                        controller.currentuser.value) {
+                    if (controller.messages[index].senderId == controller.currentuser.value) {
                       controller.issender.value = true;
+                    }else{
+                      controller.issender.value=false;
                     }
                     return BubbleSpecialThree(
                       text: controller.messages[index].message,

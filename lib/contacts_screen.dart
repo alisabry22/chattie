@@ -3,7 +3,6 @@ import 'dart:developer';
 import 'package:chat_app/Services/ChatServices/chat_services.dart';
 import 'package:chat_app/Services/PhoneServices/phone_controller.dart';
 import 'package:chat_app/chat_screen.dart';
-import 'package:chat_app/main.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
@@ -40,10 +39,13 @@ class ContactsScreen extends GetView<PhoneController> {
             return controller.issearching.value
                 ? TextField(
                     onChanged: ((query) => controller.runfilter(query)),
+                    cursorColor: Colors.white,
+                    style: GoogleFonts.roboto(color:Colors.white),
                     decoration: const InputDecoration(
                       border: InputBorder.none,
                       hintText: "Search...",
                       hintStyle: TextStyle(color: Colors.grey),
+                      
                     ),
                   )
                 : Column(
@@ -54,7 +56,7 @@ class ContactsScreen extends GetView<PhoneController> {
                         style: GoogleFonts.roboto(),
                       ),
                       Text(
-                        "${controller.searchedphones.length} contacts",
+                        "${controller.usersInApp.length} contacts",
                         style: GoogleFonts.openSans(
                           color: Colors.grey,
                         ),
@@ -144,10 +146,10 @@ class ContactsScreen extends GetView<PhoneController> {
                           onTap: () async {
                             var data;
                             data = await ChatServices().createChat(
-                                controller.searchedphones[index].id);
+                                controller.searchedphonesFilter[index].id);
                             if (data[0] == true) {
                               Get.to(() => const ChatScreen(), arguments: [
-                                controller.searchedphones[index],
+                                controller.searchedphonesFilter[index],
                                 data[1]
                               ]);
                             }
@@ -157,13 +159,13 @@ class ContactsScreen extends GetView<PhoneController> {
                             leading: CircleAvatar(
                                 radius: 25,
                                 backgroundImage: NetworkImage(controller
-                                    .searchedphones[index].profilephoto)),
+                                    .searchedphonesFilter[index].profilephoto)),
                             title: Text(
-                              controller.searchedphones[index].username,
+                              controller.searchedphonesFilter[index].username,
                               style: const TextStyle(color: Colors.white),
                             ),
                             subtitle: Text(
-                              controller.searchedphones[index].quote,
+                              controller.searchedphonesFilter[index].quote,
                               style: GoogleFonts.roboto(color: Colors.white60),
                             ),
                           ),
@@ -172,7 +174,7 @@ class ContactsScreen extends GetView<PhoneController> {
                       separatorBuilder: ((context, index) {
                         return const Divider();
                       }),
-                      itemCount: controller.searchedphones.length);
+                      itemCount: controller.searchedphonesFilter.length);
                 },
               ),
               Text(
