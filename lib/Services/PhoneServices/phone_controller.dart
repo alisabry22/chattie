@@ -24,7 +24,6 @@ class PhoneController extends GetxController{
     RxBool issearching = false.obs;
       RxString userID="".obs;
       RxList<User>searchedphones=RxList.empty();
-     List<Contact>deletedContacts=[];
         RxBool isloading=false.obs;
 
 
@@ -116,13 +115,11 @@ for (var element in democontact){
 democontact.removeWhere((element) => emptyNullValues.contains(element));
 allContacts.value=democontact;
 allContacts.refresh();
-
 contactsToShow.value=allContacts;
 
 contactsToShow.refresh();
 
 //add phones to the list of phones 
-print("all contacts ${allContacts}");
   for (var contact in allContacts) {
     if(contact.phones!=null){
       for (var phone in contact.phones!) {
@@ -143,14 +140,11 @@ isloading.value=false;
       
 }
 
-    
-  
-
-
-    void runfilter(String query)async{
+ void runfilter(String query)async{
       log("run filter called $query");
         List<Contact> filterResult=[];
-        print(allContacts);
+       
+        allContacts.refresh();
       filterResult.addAll(allContacts);
      
     if(query.isNotEmpty){
@@ -161,14 +155,13 @@ isloading.value=false;
       }
      });
 
-        contactsToShow.clear();
+       
         contactsToShow.value=dummySearchList;
       contactsToShow.refresh();
     
     }
     else{
  
-      print("all contacts value ${allContacts}");
         contactsToShow.value=allContacts;
         contactsToShow.refresh();
     }

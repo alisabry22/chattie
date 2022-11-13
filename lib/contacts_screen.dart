@@ -5,7 +5,6 @@ import 'package:chat_app/Services/PhoneServices/phone_controller.dart';
 import 'package:chat_app/chat_screen.dart';
 import 'package:chat_app/main.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -67,7 +66,7 @@ class ContactsScreen extends GetView<PhoneController> {
         actions: [
           GetX<PhoneController>(
             builder: (controller) {
-              controller.requestContacts();
+             
 
               return controller.isloading.value
                   ? const Center(
@@ -85,6 +84,7 @@ class ContactsScreen extends GetView<PhoneController> {
           ),
           IconButton(
               onPressed: () {
+             
                 controller.issearching.value = !controller.issearching.value;
               },
               icon: const Icon(Icons.search)),
@@ -93,8 +93,11 @@ class ContactsScreen extends GetView<PhoneController> {
               return [
                 PopupMenuItem(
                   child: const Text("Refresh"),
-                  onTap: () {
+                  onTap: () async{
+                
                     controller.isloading.value = true;
+                 await   controller.requestContacts();
+                     
                   },
                 ),
               ];
