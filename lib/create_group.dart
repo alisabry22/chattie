@@ -75,19 +75,21 @@ class CreateGroup extends GetView<PhoneController> {
         child: Column(
           children: [
             GetX<PhoneController>(builder:(controller) {
-              return ListView.separated(
-                scrollDirection:Axis.horizontal ,
-                shrinkWrap: true,
-                itemBuilder: (context,index){
-                return Row(
-                  children: [
-                    CircleAvatar(),  //selected user
-                    Text()
-                  ],
-                );
-              }, separatorBuilder: (context,index){
-
-              }, itemCount: controller.selectedUsers.length);
+              return SizedBox(
+                height: 60,
+                child: ListView.separated(
+                  scrollDirection:Axis.horizontal ,
+                  itemBuilder: (context,index){
+                  return Row(
+                    children: [
+                      CircleAvatar(backgroundImage: NetworkImage(controller.selectedUsers[index].profilephoto),),  //selected user
+                      Text(controller.selectedUsers[index].username),
+                    ],
+                  );
+                }, separatorBuilder: (context,index){
+                  return const  SizedBox(width: 10,);
+                }, itemCount: controller.selectedUsers.length),
+              );
             },
              ),
             GetX<PhoneController>(
