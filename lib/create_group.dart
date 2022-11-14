@@ -1,5 +1,3 @@
-
-
 import 'package:chat_app/Services/PhoneServices/phone_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -11,17 +9,109 @@ class CreateGroup extends GetView<PhoneController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xff002B5B),
       appBar: AppBar(
-        title: Column(
-          children: [
-            Text("New group ",style: GoogleFonts.roboto(color:Colors.white),),
-          const  SizedBox(height: 5,),
-            Text("Add participants ",style: GoogleFonts.roboto(color:Colors.white),),
-          ],
+        backgroundColor: const Color(0xff002B5B),
+        leading: GetX<PhoneController>(
+          builder: (controller) {
+            return controller.issearching.value
+                ? BackButton(
+                    onPressed: () {
+                      controller.issearching.value =
+                          !controller.issearching.value;
+                    },
+                  )
+                : BackButton(
+                    onPressed: () {
+                      Get.back();
+                    },
+                  );
+          },
+        ),
+        title: GetX<PhoneController>(
+          builder: (controller) {
+            return controller.issearching.value
+                ? TextField(
+                    onChanged: ((query) =>
+                        controller.filterUsersInApp(query)),
+                    cursorColor: Colors.white,
+                    style: GoogleFonts.roboto(color: Colors.white),
+                    decoration: const InputDecoration(
+                      border: InputBorder.none,
+                      hintText: "Search...",
+                      hintStyle: TextStyle(color: Colors.grey),
+                    ),
+                  )
+                : Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "New group ",
+                        style: GoogleFonts.roboto(color: Colors.white),
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      Text(
+                        "Add participants ",
+                        style: GoogleFonts.roboto(
+                            color: Colors.white.withOpacity(0.7)),
+                      ),
+                    ],
+                  );
+          },
         ),
         actions: [
-          IconButton(onPressed: (){}, icon:const Icon(Icons.search)),
+          IconButton(
+              onPressed: () {
+                controller.issearching.value = true;
+              },
+              icon: const Icon(Icons.search)),
         ],
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(15),
+        child: Column(
+          children: [
+            GetX<PhoneController>(builder:(controller) {
+              return ListView.separated(itemBuilder: (context,index){
+                return 
+              }, separatorBuilder: (context,index){
+
+              }, itemCount: controller.selectedUsers.length);
+            },
+             ,),
+            GetX<PhoneController>(
+              builder: (controller) {
+                return ListView.separated(
+                    shrinkWrap: true,
+                    itemBuilder: (context, index) {
+                      print(controller.searchedphonesFilter.length);
+                      return ListTile(
+                        contentPadding: const EdgeInsets.all(0),
+                        leading: CircleAvatar(
+                            radius: 25,
+                            backgroundImage: NetworkImage(controller
+                                .searchedphonesFilter[index].profilephoto)),
+                        title: Text(
+                          controller.searchedphonesFilter[index].username,
+                          style: const TextStyle(color: Colors.white),
+                        ),
+                        subtitle: Text(
+                          controller.searchedphonesFilter[index].quote,
+                          style: GoogleFonts.roboto(color: Colors.white60),
+                        ),
+                      );
+                    },
+                    separatorBuilder: (context, index) {
+                      return const Divider();
+                    },
+                    itemCount: controller.searchedphonesFilter.length);
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
