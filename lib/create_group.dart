@@ -75,32 +75,50 @@ class CreateGroup extends GetView<PhoneController> {
         child: Column(
           children: [
             GetX<PhoneController>(builder:(controller) {
-              return ListView.separated(itemBuilder: (context,index){
-                return 
+              return ListView.separated(
+                scrollDirection:Axis.horizontal ,
+                shrinkWrap: true,
+                itemBuilder: (context,index){
+                return Row(
+                  children: [
+                    CircleAvatar(),  //selected user
+                    Text()
+                  ],
+                );
               }, separatorBuilder: (context,index){
 
               }, itemCount: controller.selectedUsers.length);
             },
-             ,),
+             ),
             GetX<PhoneController>(
               builder: (controller) {
                 return ListView.separated(
                     shrinkWrap: true,
                     itemBuilder: (context, index) {
                       print(controller.searchedphonesFilter.length);
-                      return ListTile(
-                        contentPadding: const EdgeInsets.all(0),
-                        leading: CircleAvatar(
-                            radius: 25,
-                            backgroundImage: NetworkImage(controller
-                                .searchedphonesFilter[index].profilephoto)),
-                        title: Text(
-                          controller.searchedphonesFilter[index].username,
-                          style: const TextStyle(color: Colors.white),
-                        ),
-                        subtitle: Text(
-                          controller.searchedphonesFilter[index].quote,
-                          style: GoogleFonts.roboto(color: Colors.white60),
+                      return InkWell(
+                        onTap: (){
+                          if(controller.selectedUsers.contains(controller.searchedphonesFilter[index])){
+                            controller.selectedUsers.remove(controller.searchedphonesFilter[index]);
+                          }else{
+    controller.selectedUsers.add(controller.searchedphonesFilter[index]);
+
+                          }
+                        },
+                        child: ListTile(
+                          contentPadding: const EdgeInsets.all(0),
+                          leading: CircleAvatar(
+                              radius: 25,
+                              backgroundImage: NetworkImage(controller
+                                  .searchedphonesFilter[index].profilephoto)),
+                          title: Text(
+                            controller.searchedphonesFilter[index].username,
+                            style: const TextStyle(color: Colors.white),
+                          ),
+                          subtitle: Text(
+                            controller.searchedphonesFilter[index].quote,
+                            style: GoogleFonts.roboto(color: Colors.white60),
+                          ),
                         ),
                       );
                     },

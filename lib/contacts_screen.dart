@@ -38,7 +38,7 @@ class ContactsScreen extends GetView<PhoneController> {
           builder: (controller) {
             return controller.issearching.value
                 ? TextField(
-                    onChanged: ((query) => controller.runfilter(query)),
+                    onChanged: ((query) => controller.filterUsersNotInApp(query)),
                     cursorColor: Colors.white,
                     style: GoogleFonts.roboto(color:Colors.white),
                     decoration: const InputDecoration(

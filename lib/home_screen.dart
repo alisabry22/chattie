@@ -59,20 +59,18 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
           IconButton(onPressed: () {}, icon:const Icon(Icons.search)),
           PopupMenuButton(
             itemBuilder: (context) {
-              return  [
+              return const [
                 PopupMenuItem(
                   value: 1,
-                  child:const Text("New Group"),
-                  onTap: (){
-                    Get.to(()=>const CreateGroup());
-                  },
+                  child: Text("New Group"),
+                 
                 ),
-              const  PopupMenuItem(
+                PopupMenuItem(
                  
                   value: 2,
                    child: Text("Settings"),
                 ),
-              const  PopupMenuItem(
+                PopupMenuItem(
                   
                   value: 3,
                   child:  Text("Logout"),
@@ -81,6 +79,9 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
               ];
             },
             onSelected: ((value) async {
+              if(value==1){
+                Get.to(()=>const CreateGroup());
+              }
               if (value == 3) {
                 SharedPreferences sharedprefs =
                     await SharedPreferences.getInstance();

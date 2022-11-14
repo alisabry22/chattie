@@ -14,7 +14,9 @@ import '../../Models/user.dart';
 import '../../main.dart';
 
 class PhoneController extends GetxController{
+  //selected users to create group with
 
+  RxList<User> selectedUsers=RxList.empty();
    RxList<String> phones=RxList.empty();
    //contacts that remains with out changes
     RxList<Contact> allContacts =RxList.empty();
@@ -150,31 +152,14 @@ isloading.value=false;
       
 }
 
- void runfilter(String query)async{
+ void filterUsersNotInApp(String query)async{
       log("run filter called $query");
         List<Contact> filterResult=[];
-        List<User> searchphonesfilter=[];
-
-
       filterResult.addAll(allContacts);
-      searchphonesfilter.addAll(usersInApp);
+  
 
-//filter users using app
-      if(query.isNotEmpty){
-        List<User>dummysearchusers=[];
-        for (var element in searchphonesfilter) {
-          if(element.username.toLowerCase().contains(query.toLowerCase())){
-            dummysearchusers.add(element);
-          }
-        }
-        log(dummysearchusers.toString());
-        searchedphonesFilter.value=dummysearchusers;
-        searchedphonesFilter.refresh();
+  filterUsersInApp(query);
 
-        }else{
-          searchedphonesFilter.value=usersInApp;
-          searchedphonesFilter.refresh();
-        }
 
 
   //filter users which they are not in our  app   
@@ -197,6 +182,30 @@ isloading.value=false;
         contactsToShow.refresh();
     }
 }
+
+ void filterUsersInApp(String query)async{
+        List<User> searchphonesfilter=[];
+
+
+      searchphonesfilter.addAll(usersInApp);
+
+//filter users using app
+      if(query.isNotEmpty){
+        List<User>dummysearchusers=[];
+        for (var element in searchphonesfilter) {
+          if(element.username.toLowerCase().contains(query.toLowerCase())){
+            dummysearchusers.add(element);
+          }
+        }
+        log(dummysearchusers.toString());
+        searchedphonesFilter.value=dummysearchusers;
+        searchedphonesFilter.refresh();
+
+        }else{
+          searchedphonesFilter.value=usersInApp;
+          searchedphonesFilter.refresh();
+        }
+ }
 
 
 //remove contacts that use app from all contacts list 
