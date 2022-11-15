@@ -1,5 +1,6 @@
 import 'package:chat_app/Services/PhoneServices/phone_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -32,8 +33,7 @@ class CreateGroup extends GetView<PhoneController> {
           builder: (controller) {
             return controller.issearching.value
                 ? TextField(
-                    onChanged: ((query) =>
-                        controller.filterUsersInApp(query)),
+                    onChanged: ((query) => controller.filterUsersInApp(query)),
                     cursorColor: Colors.white,
                     style: GoogleFonts.roboto(color: Colors.white),
                     decoration: const InputDecoration(
@@ -74,24 +74,35 @@ class CreateGroup extends GetView<PhoneController> {
         padding: const EdgeInsets.all(15),
         child: Column(
           children: [
-            GetX<PhoneController>(builder:(controller) {
-              return SizedBox(
-                height: 60,
-                child: ListView.separated(
-                  scrollDirection:Axis.horizontal ,
-                  itemBuilder: (context,index){
-                  return Row(
-                    children: [
-                      CircleAvatar(backgroundImage: NetworkImage(controller.selectedUsers[index].profilephoto),),  //selected user
-                      Text(controller.selectedUsers[index].username),
-                    ],
-                  );
-                }, separatorBuilder: (context,index){
-                  return const  SizedBox(width: 10,);
-                }, itemCount: controller.selectedUsers.length),
-              );
-            },
-             ),
+            GetX<PhoneController>(
+              builder: (controller) {
+                return controller.selectedUsers.isNotEmpty
+                    ? SizedBox(
+                        height: 60,
+                        child: ListView.separated(
+                            scrollDirection: Axis.horizontal,
+                            itemBuilder: (context, index) {
+                              return Row(
+                                children: [
+                                  CircleAvatar(
+                                    backgroundImage: NetworkImage(controller
+                                        .selectedUsers[index].profilephoto),
+                                  ), //selected user
+                                  Text(
+                                      controller.selectedUsers[index].username),
+                                ],
+                              );
+                            },
+                            separatorBuilder: (context, index) {
+                              return const SizedBox(
+                                width: 10,
+                              );
+                            },
+                            itemCount: controller.selectedUsers.length),
+                      )
+                    : Container();
+              },
+            ),
             GetX<PhoneController>(
               builder: (controller) {
                 return ListView.separated(
@@ -99,20 +110,35 @@ class CreateGroup extends GetView<PhoneController> {
                     itemBuilder: (context, index) {
                       print(controller.searchedphonesFilter.length);
                       return InkWell(
-                        onTap: (){
-                          if(controller.selectedUsers.contains(controller.searchedphonesFilter[index])){
-                            controller.selectedUsers.remove(controller.searchedphonesFilter[index]);
-                          }else{
-    controller.selectedUsers.add(controller.searchedphonesFilter[index]);
-
+                        onTap: () {
+                          if (controller.selectedUsers.contains(
+                              controller.searchedphonesFilter[index])) {
+                            controller.selectedUsers
+                                .remove(controller.searchedphonesFilter[index]);
+                          } else {
+                            controller.selectedUsers
+                                .add(controller.searchedphonesFilter[index]);
                           }
                         },
                         child: ListTile(
                           contentPadding: const EdgeInsets.all(0),
-                          leading: CircleAvatar(
-                              radius: 25,
-                              backgroundImage: NetworkImage(controller
-                                  .searchedphonesFilter[index].profilephoto)),
+                          leading: controller.selectedUsers.contains(
+                                  controller.searchedphonesFilter[index])
+                              ? Stack(
+                                children:[
+                                    CircleAvatar(
+                                    radius: 25,
+                                    backgroundImage: NetworkImage(controller
+                                        .searchedphonesFilter[index]
+                                        .profilephoto)),
+                                      Icon(FontAwesomeIcons.check),
+                                ] 
+                              )
+                              : CircleAvatar(
+                                  radius: 25,
+                                  backgroundImage: NetworkImage(controller
+                                      .searchedphonesFilter[index]
+                                      .profilephoto)),
                           title: Text(
                             controller.searchedphonesFilter[index].username,
                             style: const TextStyle(color: Colors.white),
